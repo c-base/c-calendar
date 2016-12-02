@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-"""Foobar.py: Description of what foobar does."""
+"""convertcal.py: Converts several ICS files and exports a Javascript array suitable for fullcalendar.io."""
 
 __author__      = "Ricardo Band <xen@c-base.org, Uwe Kamper <uk@c-base.org>"
 __copyright__   = "Copyright 2016, Berlin, Germany"
@@ -12,6 +12,7 @@ from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 import pytz
 import json
+import os
 
 from icalendar import Calendar
 
@@ -72,7 +73,10 @@ def do_one_ics(ics):
 
     return all_events
 
-with open('html/exported/events.js', mode="w") as outfh:
+
+export_name = os.path.join(os.path.dirname(__file__), 'calendar_export', 'events.js')
+
+with open(os.path.realpath(export_name), mode="w") as outfh:
     ics = urllib.request.urlopen('https://c.c-base.org/calendar/events.ics').read()
     all_events = do_one_ics(ics)
     outfh.write("window.c_base_events = " + json.dumps(all_events, indent=4, sort_keys=True) + ";\n")

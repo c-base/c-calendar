@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>blah</title>
+<link rel='stylesheet' href='fullcalendar-3.0.1/fullcalendar.css' />
+</head>
+<body>
+<div id="calendar"></div>
+<script src="lib/jquery-3.1.1.min.js"></script>
+<script src="lib/moment-with-locales.js"></script>
+<script src="fullcalendar-3.0.1/fullcalendar.min.js"></script>
+<script src="fullcalendar-3.0.1/locale-all.js"></script>
+<script src="exported/events.js"></script>
+<script>
+$(document).ready(function() {
+
+    // page is now ready, initialize the calendar...
+
+    $('#calendar').fullCalendar({
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+       },
+       locale: 'de',
+       navLinks: true, // can click day/week names to navigate views
+        eventSources: [{
+            events: window.c_base_events,
+            color: 'black',     // an option!
+            textColor: 'yellow' // an option!
+        },{
+            events: window.c_base_regulars,
+            color: 'red',     // an option!
+            textColor: 'yellow' // an option!
+        },{
+            events: window.c_base_seminars,
+            color: 'blue',     // an option!
+            textColor: 'yellow' // an option!
+        }
+        ],
+        views: {
+            month: { // name of view
+                titleFormat: 'YYYY, MM, DD',
+                // other view-specific options here
+                displayEventEnd: true
+            }
+        }
+    })
+
+});
+</script>
+</body>
+</html>

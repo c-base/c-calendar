@@ -22,7 +22,7 @@
 </head>
 
 <body>
-    <div id="logo"><img src="//www.c-base.org/cv6/images/c-base_raumstation.gif" width="327" height="32" alt="c-base Raumstation unter Berlin"></div>
+    <div id="logo"><img src="/cv6/images/c-base_raumstation.gif" width="327" height="32" alt="c-base Raumstation unter Berlin"></div>
     <div id="meta_navi">
     <a href="https://www.c-base.org/cv50f/">about</a> |
     <a href="https://logbuch.c-base.org">logbuch</a> |
@@ -32,8 +32,12 @@
     <a href="https://www.c-base.org/cv50f/core/impressum.html">contact</a>
     </div>
 
-    <div id="calendar" style="margin: 100px 50px 50px 50px;"></div>
-
+    <div id="calendar" style="margin: 100px 50px 10px 50px;">
+	    <!--<h1 id="spinner">Kalender wird geladen ...</h1>-->
+    </div>
+    <div  style="margin: 0px 50px 50px 50px;">
+	Stand / last exported at: <span id="stand">unbekannt / unknown<span>
+	</div>
 
     <script src="lib/jquery-3.1.1.min.js"></script>
     <script src="lib/moment-with-locales.js"></script>
@@ -77,7 +81,8 @@
              }
          }
      })
-
+          $("#stand").html(window.stand);
+	  $("spinner").hide();
     });
     </script>
 </body>

@@ -74,7 +74,7 @@ def do_one_ics(ics):
     return all_events
 
 
-export_name = os.path.join(os.path.dirname(__file__), 'calendar_export', 'events.js')
+export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.js')
 
 with open(os.path.realpath(export_name), mode="w") as outfh:
     ics = urllib.request.urlopen('https://c.c-base.org/calendar/events.ics').read()
@@ -87,3 +87,4 @@ with open(os.path.realpath(export_name), mode="w") as outfh:
     ics = urllib.request.urlopen(url).read()
     all_events = do_one_ics(ics)
     outfh.write("window.c_base_seminars= " + json.dumps(all_events, indent=4, sort_keys=True) + ";\n")
+    outfh.write("window.stand = \"" + datetime.now().isoformat() +"\";\n")

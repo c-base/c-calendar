@@ -1,54 +1,85 @@
-<!doctype html>
-<html lang=en>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-<meta charset=utf-8>
-<title>blah</title>
-<link rel='stylesheet' href='fullcalendar-3.0.1/fullcalendar.css' />
-</head>
-<body>
-<div id="calendar"></div>
-<script src="lib/jquery-3.1.1.min.js"></script>
-<script src="lib/moment-with-locales.js"></script>
-<script src="fullcalendar-3.0.1/fullcalendar.min.js"></script>
-<script src="fullcalendar-3.0.1/locale-all.js"></script>
-<script src="../calendar_export/events.js"></script>
-<script>
-$(document).ready(function() {
-
-    // page is now ready, initialize the calendar...
-
-    $('#calendar').fullCalendar({
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'month,agendaWeek,agendaDay'
-       },
-       locale: 'de',
-       navLinks: true, // can click day/week names to navigate views
-        eventSources: [{
-            events: window.c_base_events,
-            color: 'black',     // an option!
-            textColor: 'yellow' // an option!
-        },{
-            events: window.c_base_regulars,
-            color: 'red',     // an option!
-            textColor: 'yellow' // an option!
-        },{
-            events: window.c_base_seminars,
-            color: 'blue',     // an option!
-            textColor: 'yellow' // an option!
-        }
-        ],
-        views: {
-            month: { // name of view
-                titleFormat: 'YYYY, MM, DD',
-                // other view-specific options here
-                displayEventEnd: true
-            }
-        }
-    })
-
-});
+  <title>c-base >>> Kalender unter Berlin</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="description" content="c-base event calendar." />
+  <link rel="STYLESHEET" type="text/css" href="http://www.c-base.org/cv6/styles.css">
+  <link rel='stylesheet' href='fullcalendar-3.0.1/fullcalendar.css' />
+  <style type="text/css">
+    div.termin_box p {
+          margin:5px 0 0 0;
+          padding:0 15px 0 10px;}
+          
+    .fc-unthemed .fc-today {
+          	background: RGBA(87, 183, 234, 0.5);
+          }
+  </style>
+  <script type="text/javascript">
 </script>
+</head>
+
+<body>
+    <div id="logo"><img src="http://www.c-base.org/cv6/images/c-base_raumstation.gif" width="327" height="32" alt="c-base Raumstation unter Berlin"></div>
+    <div id="meta_navi">
+    <a href="https://www.c-base.org/cv50f/">about</a> |
+    <a href="https://logbuch.c-base.org">logbuch</a> |
+    <a href="https://audioblog.c-base.org">audioblog</a> |
+    <a href="https://wiki.c-base.org/coredump/">wiki</a> |
+    <a href="https://www.c-base.org/cv50f/core/impressum.html">impressum</a> |
+    <a href="https://www.c-base.org/cv50f/core/impressum.html">contact</a>
+    </div>
+
+    <div id="calendar" style="margin: 100px 50px 50px 50px;"></div>
+
+
+    <script src="lib/jquery-3.1.1.min.js"></script>
+    <script src="lib/moment-with-locales.js"></script>
+    <script src="fullcalendar-3.0.1/fullcalendar.min.js"></script>
+    <script src="fullcalendar-3.0.1/locale-all.js"></script>
+    <script src="exported/events.js"></script>
+    <script>
+    $(document).ready(function() {
+
+     // page is now ready, initialize the calendar...
+
+     $('#calendar').fullCalendar({
+         timeFormat: 'h:mm',
+         titleFormat: 'MMMM YYYY',
+         header: {
+             left: 'prev,next today',
+             center: 'title',
+             right: 'month,agendaWeek,agendaDay'
+        },
+        locale: 'de',
+        navLinks: true, // can click day/week names to navigate views
+         eventSources: [{
+             events: window.c_base_events,
+             color: 'black',     // an option!
+             textColor: 'yellow' // an option!
+         },{
+             events: window.c_base_regulars,
+             color: 'red',     // an option!
+             textColor: 'yellow' // an option!
+         },{
+             events: window.c_base_seminars,
+             color: 'blue',     // an option!
+             textColor: 'yellow' // an option!
+         }
+         ],
+         views: {
+             month: { // name of view
+                 titleFormat: 'YYYY, MM, DD',
+                 // other view-specific options here
+                 displayEventEnd: true
+             }
+         }
+     })
+
+    });
+    </script>
 </body>
 </html>
+

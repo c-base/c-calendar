@@ -33,13 +33,10 @@ def do_one_ics(ics):
         if not isinstance(d, datetime):
             d = datetime(d.year, d.month, d.day, tzinfo=pytz.utc)
             is_all_day = True
-        print(d.strftime(DATE_FORMAT), ':', de.strftime(DATE_FORMAT))
-        print(event.get('summary'))
             
         r = event.get('rrule')
         if r:
             rstr = r.to_ical().decode('utf-8')
-            print("RSTR", rstr)
             rule = rrule.rrulestr(rstr, ignoretz=True, dtstart=d.replace(tzinfo=None))
             after = datetime.utcnow() - timedelta(days=90)
             before = datetime.utcnow() + timedelta(days=365)

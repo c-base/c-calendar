@@ -18,7 +18,7 @@ from icalendar import Calendar
 
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
-def do_one_ics(ics):
+def do_one_ics(ics, default_location):
     events = []
     cal = Calendar.from_ical(ics)
 
@@ -29,6 +29,8 @@ def do_one_ics(ics):
     for ev_id, event in enumerate(cal.walk('vevent')):
         d = event.get('dtstart').dt
         de = event.get('dtend').dt
+        location = event.get('location', default_location)
+        description = event.get('description', '')
         is_all_day = False
         if not isinstance(d, datetime):
             d = datetime(d.year, d.month, d.day, tzinfo=pytz.utc)
@@ -46,6 +48,8 @@ def do_one_ics(ics):
                     "id": ev_id,
                     "title": event.get('summary'),
                     "start": ev.isoformat(),
+                    "description": description,
+                    "location": location
                 }
                 if is_all_day == True:
                     current["allDay"] = True
@@ -60,6 +64,8 @@ def do_one_ics(ics):
             "id": ev_id,
             "title": event.get('summary'), 
             "start": d.isoformat(), 
+            "description": description,
+            "location": location
         }
         if is_all_day == True:
             current["allDay"] = True
@@ -76,13 +82,17 @@ export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'event
 
 with open(os.path.realpath(export_name), mode="w") as outfh:
     ics = urllib.request.urlopen('https://c.c-base.org/calendar/events.ics').read()
-    all_events = do_one_ics(ics)
+    all_events = do_one_ics(ics, 'mainhall')
     outfh.write("window.c_base_events = " + json.dumps(all_events, indent=4, sort_keys=True) + ";\n")
+
+    #
     ics = urllib.request.urlopen('https://c.c-base.org/calendar/regulars.ics').read()
-    all_events = do_one_ics(ics)
+    all_events = do_one_ics(ics, 'mainhall')
     outfh.write("window.c_base_regulars = " + json.dumps(all_events, indent=4, sort_keys=True) + ";\n")
+
+    # 
     url = "https://c.c-base.org/calendar/seminars.ics"
     ics = urllib.request.urlopen(url).read()
-    all_events = do_one_ics(ics)
+    all_events = do_one_ics(ics, "seminarraum")
     outfh.write("window.c_base_seminars= " + json.dumps(all_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.stand = \"" + datetime.now().isoformat() +"\";\n")

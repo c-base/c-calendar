@@ -63,6 +63,7 @@ def do_one_ics(ics):
         }
         if is_all_day == True:
             current["allDay"] = True
+            current["end"] = de.isoformat()
         else:
             current["allDay"] = False
             current["end"] = de.isoformat()

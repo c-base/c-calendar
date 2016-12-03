@@ -8,6 +8,7 @@ window.c_base_events = [
     },
     {
         "allDay": true,
+        "end": "2015-08-24",
         "id": 1,
         "start": "2015-08-05T00:00:00+00:00",
         "title": "camp"
@@ -323,6 +324,7 @@ window.c_base_events = [
     },
     {
         "allDay": true,
+        "end": "2016-07-03",
         "id": 51,
         "start": "2016-07-02T00:00:00+00:00",
         "title": "tribute 2.0+> / kelas veranstaltung"
@@ -740,12 +742,14 @@ window.c_base_events = [
     },
     {
         "allDay": true,
+        "end": "2016-06-14",
         "id": 101,
         "start": "2016-06-13T00:00:00+00:00",
         "title": "CLOSED EVENT!"
     },
     {
         "allDay": true,
+        "end": "2014-10-19",
         "id": 102,
         "start": "2014-10-18T00:00:00+00:00",
         "title": "tba_cultorga"
@@ -794,6 +798,7 @@ window.c_base_events = [
     },
     {
         "allDay": true,
+        "end": "2016-11-24",
         "id": 109,
         "start": "2016-11-23T00:00:00+00:00",
         "title": "OSB Alliance - Mitgliederversammlung"
@@ -821,6 +826,7 @@ window.c_base_events = [
     },
     {
         "allDay": true,
+        "end": "2015-10-22",
         "id": 113,
         "start": "2015-10-21T00:00:00+00:00",
         "title": "Back to the future day"
@@ -862,6 +868,7 @@ window.c_base_events = [
     },
     {
         "allDay": true,
+        "end": "2015-05-18",
         "id": 119,
         "start": "2015-05-15T00:00:00+00:00",
         "title": "wcw15"
@@ -1092,6 +1099,7 @@ window.c_base_events = [
     },
     {
         "allDay": true,
+        "end": "2017-01-01",
         "id": 141,
         "start": "2016-12-31T00:00:00+00:00",
         "title": "tba"
@@ -1175,6 +1183,7 @@ window.c_base_events = [
     },
     {
         "allDay": true,
+        "end": "2014-11-19",
         "id": 157,
         "start": "2014-11-18T00:00:00+00:00",
         "title": "tba_cultorga (Garderobe)"
@@ -1195,6 +1204,7 @@ window.c_base_events = [
     },
     {
         "allDay": true,
+        "end": "2015-01-19",
         "id": 163,
         "start": "2015-01-16T00:00:00+00:00",
         "title": "Kite Workshop"
@@ -3683,6 +3693,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2015-10-04",
         "id": 2,
         "start": "2015-10-03T00:00:00+00:00",
         "title": "AMV"
@@ -3745,6 +3756,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-01-01",
         "id": 11,
         "start": "2015-12-31T00:00:00+00:00",
         "title": "32c3 logistics"
@@ -3779,6 +3791,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-10-10",
         "id": 16,
         "start": "2016-10-08T00:00:00+00:00",
         "title": "Hackfest GStreamer"
@@ -3820,6 +3833,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2014-02-05",
         "id": 22,
         "start": "2014-01-27T00:00:00+00:00",
         "title": "tba"
@@ -3868,6 +3882,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2010-03-29",
         "id": 31,
         "start": "2010-03-27T00:00:00+00:00",
         "title": "Ableton"
@@ -3909,6 +3924,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2010-05-31",
         "id": 38,
         "start": "2010-05-29T00:00:00+00:00",
         "title": "Ableton"
@@ -4223,6 +4239,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2015-12-23",
         "id": 69,
         "start": "2015-12-22T00:00:00+00:00",
         "title": "32c3 logistics"
@@ -4250,6 +4267,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2013-05-20",
         "id": 73,
         "start": "2013-05-19T00:00:00+00:00",
         "title": "Inkscape-Workshop"
@@ -4410,6 +4428,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2010-01-03",
         "id": 85,
         "start": "2009-12-28T00:00:00+00:00",
         "title": "seminarraum reserviert f\u00fcr VAs"
@@ -4444,12 +4463,14 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2015-12-24",
         "id": 91,
         "start": "2015-12-23T00:00:00+00:00",
         "title": "32c3 logistics"
     },
     {
         "allDay": true,
+        "end": "2010-08-23",
         "id": 92,
         "start": "2010-08-22T00:00:00+00:00",
         "title": "hacksonntach"
@@ -4484,6 +4505,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2015-12-06",
         "id": 98,
         "start": "2015-12-05T00:00:00+00:00",
         "title": "tba_dave"
@@ -4518,12 +4540,14 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2009-06-14",
         "id": 103,
         "start": "2009-06-13T00:00:00+00:00",
         "title": "seminarraum belegt f\u00fcr wikipedia"
     },
     {
         "allDay": true,
+        "end": "2013-08-12",
         "id": 104,
         "start": "2013-08-09T00:00:00+00:00",
         "title": "Kicad Einf\u00fchrung"
@@ -4999,6 +5023,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2010-01-04",
         "id": 125,
         "start": "2010-01-03T00:00:00+00:00",
         "title": "DC meet-up"
@@ -5215,6 +5240,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2012-11-04",
         "id": 161,
         "start": "2012-11-03T00:00:00+00:00",
         "title": "c-vision 2. Treffen"
@@ -5228,6 +5254,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-04-11",
         "id": 163,
         "start": "2016-04-09T00:00:00+00:00",
         "title": "miniLAC (Linux Audio Conference)"
@@ -5290,6 +5317,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2013-10-05",
         "id": 172,
         "start": "2013-10-02T00:00:00+00:00",
         "title": "IS4CWN"
@@ -5310,6 +5338,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2013-05-12",
         "id": 176,
         "start": "2013-05-11T00:00:00+00:00",
         "title": "Qu\u00e4kmonster Workshop"
@@ -5330,12 +5359,14 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2012-10-15",
         "id": 180,
         "start": "2012-10-12T00:00:00+00:00",
         "title": "devfest"
     },
     {
         "allDay": true,
+        "end": "2016-03-20",
         "id": 181,
         "start": "2016-03-19T00:00:00+00:00",
         "title": "LOAD e.V. Mitgliederversammlung"
@@ -5384,6 +5415,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-06-15",
         "id": 189,
         "start": "2016-06-13T00:00:00+00:00",
         "title": "blocked (cultorga)"
@@ -5397,12 +5429,14 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2014-10-19",
         "id": 192,
         "start": "2014-10-18T00:00:00+00:00",
         "title": "tba_cultorga"
     },
     {
         "allDay": true,
+        "end": "2013-05-19",
         "id": 193,
         "start": "2013-05-18T00:00:00+00:00",
         "title": "Inkscape-Workshop"
@@ -5437,6 +5471,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-08-21",
         "id": 199,
         "start": "2016-08-20T00:00:00+00:00",
         "title": "Virtual Developer Meetup"
@@ -5450,6 +5485,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2012-10-26",
         "id": 201,
         "start": "2012-10-25T00:00:00+00:00",
         "title": "Quantified Self Meetup"
@@ -5526,6 +5562,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2010-02-08",
         "id": 215,
         "start": "2010-01-29T00:00:00+00:00",
         "title": "seminarraum reserviert f\u00fcr TM2010"
@@ -5595,6 +5632,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2014-06-09",
         "id": 226,
         "start": "2014-06-05T00:00:00+00:00",
         "title": "tba"
@@ -5629,18 +5667,21 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2014-11-19",
         "id": 231,
         "start": "2014-11-18T00:00:00+00:00",
         "title": "tba_cultorga (Garderobe)"
     },
     {
         "allDay": true,
+        "end": "2016-07-03",
         "id": 232,
         "start": "2016-07-02T00:00:00+00:00",
         "title": "tribute 2 0 "
     },
     {
         "allDay": true,
+        "end": "2016-06-13",
         "id": 233,
         "start": "2016-06-10T00:00:00+00:00",
         "title": "tba_cultorga"
@@ -5724,6 +5765,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2012-06-04",
         "id": 246,
         "start": "2012-06-03T00:00:00+00:00",
         "title": "barcamp zur buzzword"
@@ -5758,12 +5800,14 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2014-06-02",
         "id": 251,
         "start": "2014-05-30T00:00:00+00:00",
         "title": "wcw14"
     },
     {
         "allDay": true,
+        "end": "2015-12-07",
         "id": 252,
         "start": "2015-12-06T00:00:00+00:00",
         "title": "tba_dave"
@@ -5784,12 +5828,14 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-01-25",
         "id": 255,
         "start": "2016-01-23T00:00:00+00:00",
         "title": "FUHA (Nerdbeere)"
     },
     {
         "allDay": true,
+        "end": "2009-03-29",
         "id": 256,
         "start": "2009-03-28T00:00:00+00:00",
         "title": "Seminarraum belegt f\u00fcr Mozilla"
@@ -5838,6 +5884,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-12-24",
         "id": 263,
         "start": "2016-12-19T00:00:00+00:00",
         "title": "33c3 logistics"
@@ -5851,6 +5898,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-06-06",
         "id": 265,
         "start": "2016-06-03T00:00:00+00:00",
         "title": "tba_cultorga"
@@ -5864,6 +5912,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2015-12-31",
         "id": 267,
         "start": "2015-12-30T00:00:00+00:00",
         "title": "32c3 logistics"
@@ -5947,6 +5996,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-11-24",
         "id": 281,
         "start": "2016-11-23T00:00:00+00:00",
         "title": "OSB Alliance"
@@ -6037,6 +6087,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2009-04-05",
         "id": 295,
         "start": "2009-04-03T00:00:00+00:00",
         "title": "wikipedia developer meeting"
@@ -6078,6 +6129,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2015-02-19",
         "id": 301,
         "start": "2015-02-18T00:00:00+00:00",
         "title": "tba_cultorga"
@@ -6182,12 +6234,14 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-11-24",
         "id": 320,
         "start": "2016-11-22T00:00:00+00:00",
         "title": "tba_cultorga"
     },
     {
         "allDay": true,
+        "end": "2008-04-14",
         "id": 321,
         "start": "2008-04-13T00:00:00+00:00",
         "title": "hardy heron install fest"
@@ -6236,6 +6290,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2013-02-11",
         "id": 328,
         "start": "2013-02-10T00:00:00+00:00",
         "title": "reserviert (jeedi)"
@@ -6277,12 +6332,14 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-08-20",
         "id": 337,
         "start": "2016-08-19T00:00:00+00:00",
         "title": "tba_cultorga"
     },
     {
         "allDay": true,
+        "end": "2016-09-04",
         "id": 339,
         "start": "2016-09-03T00:00:00+00:00",
         "title": "FSFE"
@@ -6331,6 +6388,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2015-01-19",
         "id": 346,
         "start": "2015-01-16T00:00:00+00:00",
         "title": "Kite Workshop"
@@ -6505,6 +6563,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2016-10-22",
         "id": 375,
         "start": "2016-10-21T00:00:00+00:00",
         "title": "TBA Lux"
@@ -6581,6 +6640,7 @@ window.c_base_seminars= [
     },
     {
         "allDay": true,
+        "end": "2012-08-27",
         "id": 387,
         "start": "2012-08-24T00:00:00+00:00",
         "title": "Reconstruction Seminarraum"
@@ -6635,3 +6695,4 @@ window.c_base_seminars= [
         "title": "Film + Vortrag : Widerstand in der US-Armee"
     }
 ];
+window.stand = "2016-12-03T01:05:04.057688";

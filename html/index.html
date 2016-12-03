@@ -18,9 +18,49 @@
         .fc-unthemed .fc-today {
             background: rgba(87, 183, 234, 0.5);
         }
+
+        #dialog-details, #dialog-legend {
+            display: none;
+        }
+
+        #dialog-legend table {
+            width: 100%;
+        }
+
+        #dialog-legend td {
+            padding: 6px;
+            text-align: center;
+        }
+
+        .fc-content {
+            color: white;
+            font-size: 1.4em;
+            cursor: pointer;
+            white-space: pre-line !important;
+            padding: 3px;
+        }
+
+        .ui-widget-header {
+            font-size: 1.2em;
+            font-weight: normal;
+        }
+
+        tbody .ui-widget-content {
+            background-color: transparent;
+        }
+
+        .fc-day-number {
+            background-color: #e9e9e9;
+            padding: 3px !important;
+            min-width: 15px;
+            font-weight: bold;
+        }
+
+        .fc-time.fc-axis {
+            color: white;
+            font-weight: bold;
+        }
     </style>
-    <script type="text/javascript">
-    </script>
 </head>
 
 <body>
@@ -44,12 +84,21 @@
         Stand / last exported at: <span id="last-update">unbekannt / unknown</span>
     </div>
 
-    <div id="dialog-legend">
-        <h1>Here may be dragoons</h1>
+    <div id="dialog-legend" title="Colors">
+        <table>
+            <tr>
+                <td id="c_base_events">Events</td>
+            </tr>
+            <tr>
+                <td id="c_base_regulars">Regulars</td>
+            </tr>
+            <tr>
+                <td id="c_base_seminars">Seminars</td>
+            </tr>
+        </table>
     </div>
 
     <div id="dialog-details">
-        <h1></h1>
         <table>
             <tr>
                 <td>Start:</td>
@@ -81,15 +130,33 @@
 
             // page is now ready, initialize the calendar...
 
+            var colors = {
+                'c_base_events': '#14105D',
+                'c_base_regulars': '#055D53',
+                'c_base_seminars': '#145D1B'
+            };
+
             $('#calendar').fullCalendar({
+                theme: true,
                 timeFormat: 'HH:mm',
                 titleFormat: 'MMMM YYYY',
                 customButtons: {
                     info: {
-                        text: "(Info icon)",
+                        // text: "Legend",
+                        icon: 'info',
+                        themeIcon: 'info',
                         click: function (event) {
-                            $('#dialog-legend').dialog({
+                            var $dialog = $('#dialog-legend');
+
+                            for(var kind in colors) {
+                                if (colors.hasOwnProperty(kind)) {
+                                    $dialog.find('#'+kind).css({ backgroundColor: colors[kind], color: 'white'});
+                                }
+                            }
+
+                            $dialog.dialog({
                                 modal: true,
+                                title: 'Colors',
                                 buttons: {
                                     Close: function() {
                                         $(this).dialog("close");
@@ -100,32 +167,27 @@
                     }
                 },
                 header: {
-                    left: 'prev,next today info',
+                    left: 'prev,next today',
                     center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
+                    right: 'info month,agendaWeek,agendaDay'
                 },
                 locale: 'de',
                 navLinks: true, // can click day/week names to navigate views
                 eventSources: [{
                     events: window.c_base_events,
-                    color: 'black',     // an option!
-                    textColor: 'yellow' // an option!
+                    color: colors.c_base_events      // an option!
                 }, {
                     events: window.c_base_regulars,
-                    color: 'red',     // an option!
-                    textColor: 'yellow' // an option!
+                    color: colors.c_base_regulars    // an option!
                 }, {
                     events: window.c_base_seminars,
-                    color: 'blue',     // an option!
-                    textColor: 'yellow' // an option!
+                    color: colors.c_base_seminars    // an option!
                 }
                 ],
                 eventClick: function(calendarEvent, jsEvent, view) {
                     var $template = $("#dialog-details"),
                         attributes = ['start', 'end', 'location', 'description'],
                         html = "";
-
-                    $template.find('h1').html(calendarEvent.title);
 
                     for (var i = 0; i < attributes.length; i++) {
                         html = calendarEvent[attributes[i]];
@@ -138,6 +200,8 @@
 
                     $template.dialog({
                         modal: true,
+                        resizable: false,
+                        title: calendarEvent.title,
                         buttons: {
                             Close: function() {
                                 $(this).dialog("close");

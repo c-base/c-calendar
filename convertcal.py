@@ -95,4 +95,4 @@ with open(os.path.realpath(export_name), mode="w") as outfh:
     ics = urllib.request.urlopen(url).read()
     all_events = do_one_ics(ics, "seminarraum")
     outfh.write("window.c_base_seminars= " + json.dumps(all_events, indent=4, sort_keys=True) + ";\n")
-    outfh.write("window.stand = \"" + datetime.now().isoformat() +"\";\n")
+    outfh.write("window.lastUpdate = \"" + datetime.now().isoformat() +"\";\n")

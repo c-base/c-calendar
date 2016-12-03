@@ -1,90 +1,161 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <title>c-base >>> Kalender unter Berlin</title>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <meta name="description" content="c-base event calendar." />
-  <link rel="STYLESHEET" type="text/css" href="//www.c-base.org/cv6/styles.css">
-  <link rel='stylesheet' href='fullcalendar-3.0.1/fullcalendar.css' />
-  <style type="text/css">
-    div.termin_box p {
-          margin:5px 0 0 0;
-          padding:0 15px 0 10px;}
-          
-    .fc-unthemed .fc-today {
-          	background: RGBA(87, 183, 234, 0.5);
-          }
-  </style>
-  <script type="text/javascript">
-</script>
+    <title>c-base >>> Kalender unter Berlin</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="description" content="c-base event calendar."/>
+    <link rel="stylesheet" type="text/css" href="https://www.c-base.org/cv6/styles.css">
+    <link rel="stylesheet" href="fullcalendar-3.0.1/fullcalendar.css"/>
+    <link rel="stylesheet" href="lib/css/jquery-ui.min.css">
+    <!--<link rel="stylesheet" href="lib/css/jquery-ui.structure.min.css">-->
+    <!--<link rel="stylesheet" href="lib/css/jquery-ui.theme.min.css">-->
+    <style type="text/css">
+        div.termin_box p {
+            margin: 5px 0 0 0;
+            padding: 0 15px 0 10px;
+        }
+
+        .fc-unthemed .fc-today {
+            background: rgba(87, 183, 234, 0.5);
+        }
+    </style>
+    <script type="text/javascript">
+    </script>
 </head>
 
 <body>
-    <div id="logo"><img src="/cv6/images/c-base_raumstation.gif" width="327" height="32" alt="c-base Raumstation unter Berlin"></div>
+    <div id="logo"><img src="https://www.c-base.org/cv6/images/c-base_raumstation.gif" width="327" height="32"
+                        alt="c-base Raumstation unter Berlin" />
+    </div>
     <div id="meta_navi">
-    <a href="https://www.c-base.org/">home</a> |
-    <a href="https://www.c-base.org/cv50f/">about</a> |
-    <a href="https://logbuch.c-base.org">logbuch</a> |
-    <a href="https://audioblog.c-base.org">audioblog</a> |
-    <a href="https://wiki.c-base.org/coredump/">wiki</a> |
-    <a href="https://www.c-base.org/cv50f/core/impressum.html">impressum</a> |
-    <a href="https://www.c-base.org/cv50f/core/impressum.html">contact</a>
+        <a href="https://www.c-base.org/">home</a> |
+        <a href="https://www.c-base.org/cv50f/">about</a> |
+        <a href="https://logbuch.c-base.org">logbuch</a> |
+        <a href="https://audioblog.c-base.org">audioblog</a> |
+        <a href="https://wiki.c-base.org/coredump/">wiki</a> |
+        <a href="https://www.c-base.org/cv50f/core/impressum.html">impressum</a> |
+        <a href="https://www.c-base.org/cv50f/core/impressum.html">contact</a>
     </div>
 
     <div id="calendar" style="margin: 100px 50px 10px 50px;">
-	    <!--<h1 id="spinner">Kalender wird geladen ...</h1>-->
+        <!--<h1 id="spinner">Kalender wird geladen ...</h1>-->
     </div>
-    <div  style="margin: 0px 50px 50px 50px;">
-	Stand / last exported at: <span id="stand">unbekannt / unknown<span>
-	</div>
+    <div style="margin: 0px 50px 50px 50px;">
+        Stand / last exported at: <span id="last-update">unbekannt / unknown</span>
+    </div>
+
+    <div id="dialog-legend">
+        <h1>Here may be dragoons</h1>
+    </div>
+
+    <div id="dialog-details">
+        <h1></h1>
+        <table>
+            <tr>
+                <td>Start:</td>
+                <td id="start"></td>
+            </tr>
+            <tr>
+                <td>End:</td>
+                <td id="end"></td>
+            </tr>
+            <tr>
+                <td>Location</td>
+                <td id="location"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td id="description"></td>
+            </tr>
+        </table>
+    </div>
 
     <script src="lib/jquery-3.1.1.min.js"></script>
+    <script src="lib/jquery-ui-1.12.1-custom.min.js"></script>
     <script src="lib/moment-with-locales.js"></script>
     <script src="fullcalendar-3.0.1/fullcalendar.min.js"></script>
     <script src="fullcalendar-3.0.1/locale-all.js"></script>
     <script src="exported/events.js"></script>
     <script>
-    $(document).ready(function() {
+        $(document).ready(function () {
 
-     // page is now ready, initialize the calendar...
+            // page is now ready, initialize the calendar...
 
-     $('#calendar').fullCalendar({
-         timeFormat: 'HH:mm',
-         header: {
-             left: 'prev,next today',
-             center: 'title',
-             titleFormat: 'MMMM YYYY',
-             right: 'month,agendaWeek,agendaDay'
-        },
-        locale: 'de',
-        navLinks: true, // can click day/week names to navigate views
-         eventSources: [{
-             events: window.c_base_events,
-             color: 'black',     // an option!
-             textColor: 'yellow' // an option!
-         },{
-             events: window.c_base_regulars,
-             color: 'red',     // an option!
-             textColor: 'yellow' // an option!
-         },{
-             events: window.c_base_seminars,
-             color: 'blue',     // an option!
-             textColor: 'yellow' // an option!
-         }
-         ],
-         views: {
-             month: { // name of view
-                 titleFormat: 'YYYY, MM, DD',
-                 // other view-specific options here
-                 displayEventEnd: true
-             }
-         }
-     })
-          $("#stand").html(window.stand);
-	  $("spinner").hide();
-    });
+            $('#calendar').fullCalendar({
+                timeFormat: 'HH:mm',
+                titleFormat: 'MMMM YYYY',
+                customButtons: {
+                    info: {
+                        text: "(Info icon)",
+                        click: function (event) {
+                            $('#dialog-legend').dialog({
+                                modal: true,
+                                buttons: {
+                                    Close: function() {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                },
+                header: {
+                    left: 'prev,next today info',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                locale: 'de',
+                navLinks: true, // can click day/week names to navigate views
+                eventSources: [{
+                    events: window.c_base_events,
+                    color: 'black',     // an option!
+                    textColor: 'yellow' // an option!
+                }, {
+                    events: window.c_base_regulars,
+                    color: 'red',     // an option!
+                    textColor: 'yellow' // an option!
+                }, {
+                    events: window.c_base_seminars,
+                    color: 'blue',     // an option!
+                    textColor: 'yellow' // an option!
+                }
+                ],
+                eventClick: function(calendarEvent, jsEvent, view) {
+                    var $template = $("#dialog-details"),
+                        attributes = ['start', 'end', 'location', 'description'],
+                        html = "";
+
+                    $template.find('h1').html(calendarEvent.title);
+
+                    for (var i = 0; i < attributes.length; i++) {
+                        html = calendarEvent[attributes[i]];
+                        if (moment.isMoment(calendarEvent[attributes[i]])) {
+                            html = html.format();
+                        }
+
+                        $template.find('#'+attributes[i]).html(html);
+                    }
+
+                    $template.dialog({
+                        modal: true,
+                        buttons: {
+                            Close: function() {
+                                $(this).dialog("close");
+                            }
+                        }
+                    })
+                },
+                views: {
+                    month: { // name of view
+                        titleFormat: 'YYYY, MM, DD',
+                        // other view-specific options here
+                        displayEventEnd: true
+                    }
+                }
+            });
+            $("#last-update").html(window.lastUpdate);
+            $("spinner").hide();
+        });
     </script>
 </body>
 </html>

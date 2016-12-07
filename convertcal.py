@@ -79,20 +79,29 @@ def do_one_ics(ics, default_location):
 
 
 export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.js')
+error_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'errors.js')
 
-with open(os.path.realpath(export_name), mode="w") as outfh:
+try:
     ics = urllib.request.urlopen('https://c.c-base.org/calendar/events.ics').read()
-    all_events = do_one_ics(ics, 'mainhall')
-    outfh.write("window.c_base_events = " + json.dumps(all_events, indent=4, sort_keys=True) + ";\n")
-
-    #
+    c_base_events = do_one_ics(ics, 'mainhall')
     ics = urllib.request.urlopen('https://c.c-base.org/calendar/regulars.ics').read()
-    all_events = do_one_ics(ics, 'mainhall')
-    outfh.write("window.c_base_regulars = " + json.dumps(all_events, indent=4, sort_keys=True) + ";\n")
-
-    # 
+    regular_events = do_one_ics(ics, 'mainhall')
     url = "https://c.c-base.org/calendar/seminars.ics"
     ics = urllib.request.urlopen(url).read()
-    all_events = do_one_ics(ics, "seminarraum")
-    outfh.write("window.c_base_seminars= " + json.dumps(all_events, indent=4, sort_keys=True) + ";\n")
+    seminar_events = do_one_ics(ics, "seminarraum")
+except Exception as e:
+    print(e)
+    with open(os.path.realpath(error_name), mode="w") as outfh:
+        outfh.write('window.c_base_errors = ' + json.dumps(str(e)) + ";\n")
+    exit(1)
+
+with open(os.path.realpath(export_name), mode="w") as outfh:
+    outfh.write("window.c_base_regulars = " + json.dumps(regular_events, indent=4, sort_keys=True) + ";\n")
+    outfh.write("window.c_base_events = " + json.dumps(c_base_events, indent=4, sort_keys=True) + ";\n")
+    outfh.write("window.c_base_seminars= " + json.dumps(seminar_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.lastUpdate = \"" + datetime.now().isoformat() +"\";\n")
+
+with open(os.path.realpath(error_name), mode="w") as outfh:
+    outfh.write('window.c_base_errors = "";\n')
+
+exit(0)

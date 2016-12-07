@@ -83,7 +83,9 @@
     <div style="margin: 0px 50px 50px 50px;">
         Stand / last exported at: <span id="last-update">unbekannt / unknown</span>
     </div>
-
+    <div style="margin: 0px 50px 50px 50px;"> <!--color: #FF6666; background-color: #000;">-->
+	Errors: <span id="error-display">---</span>
+    </div>
     <div id="dialog-legend" title="Colors">
         <table>
             <tr>
@@ -125,6 +127,7 @@
     <script src="fullcalendar-3.0.1/fullcalendar.min.js"></script>
     <script src="fullcalendar-3.0.1/locale-all.js"></script>
     <script src="exported/events.js"></script>
+    <script src="exported/errors.js"></script>
     <script>
         $(document).ready(function () {
 
@@ -224,6 +227,7 @@
                 }
             });
             $("#last-update").html(window.lastUpdate);
+            $("#error-display").html(window.c_base_errors);
             $("spinner").hide();
         });
     </script>

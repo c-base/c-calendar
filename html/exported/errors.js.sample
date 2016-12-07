@@ -1,0 +1,1 @@
+window.c_base_errors = "Content line could not be parsed into parts: 'This is the WebDAV interface. It can only be accessed by WebDAV clients such as the ownCloud desktop sync client.': This is the WebDAV interface. It can only be accessed by WebDAV clients such as the ownCloud desktop sync client.";

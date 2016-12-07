@@ -3,3 +3,4 @@
 # Except this file
 !.gitignore
 !events.js.sample
+!errors.js.sample

@@ -99,9 +99,9 @@ with open(os.path.realpath(export_name), mode="w") as outfh:
     outfh.write("window.c_base_regulars = " + json.dumps(regular_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.c_base_events = " + json.dumps(c_base_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.c_base_seminars= " + json.dumps(seminar_events, indent=4, sort_keys=True) + ";\n")
-    outfh.write("window.lastUpdate = \"" + datetime.now().isoformat() +"\";\n")
+    outfh.write("window.lastUpdate = \"" + datetime.now().isoformat() +" UTC\";\n")
 
 with open(os.path.realpath(error_name), mode="w") as outfh:
-    outfh.write('window.c_base_errors = "";\n')
+    outfh.write('window.c_base_errors = "None";\n')
 
 exit(0)

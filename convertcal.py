@@ -28,7 +28,11 @@ def do_one_ics(ics, default_location):
     all_events = []
     for ev_id, event in enumerate(cal.walk('vevent')):
         d = event.get('dtstart').dt
-        de = event.get('dtend').dt
+        de = get_end_date(event, d)
+        if not de:
+            print("Skipping event: %s" % event.get('summary'))
+            continue
+
         location = event.get('location', default_location)
         description = event.get('description', '')
         is_all_day = False
@@ -76,6 +80,19 @@ def do_one_ics(ics, default_location):
         all_events.append(current)
 
     return all_events
+
+
+def get_end_date(event, start_date):
+    dtend = event.get('dtend')
+    if dtend:
+        end_date = dtend.dt
+    else:
+        duration = event.get('duration')
+        if not duration:
+            return None
+        end_date = start_date + duration.dt
+
+    return end_date
 
 
 export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.js')

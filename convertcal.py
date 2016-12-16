@@ -19,8 +19,14 @@ from icalendar import Calendar
 
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
+newcal = Calendar()
+newcal.add('prodid', '-//' + 'c-base' + '//' + 'c-base.org' + '//')
+newcal.add('version', '2.0')
+newcal.add('x-wr-calname', 'c-base events')
+
 def do_one_ics(ics, default_location):
     events = []
+    global newcal
     cal = Calendar.from_ical(ics)
 
     start = datetime.utcnow().replace(tzinfo=pytz.utc)
@@ -28,6 +34,7 @@ def do_one_ics(ics, default_location):
 
     all_events = []
     for ev_id, event in enumerate(cal.walk('vevent')):
+        newcal.add_component(event)
         d = event.get('dtstart').dt
         de = get_end_date(event, d)
         if not de:
@@ -128,6 +135,7 @@ def get_end_date(event, start_date):
 
 
 export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.js')
+merged_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'c-base-events.ics')
 error_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'errors.js')
 
 try:
@@ -149,6 +157,10 @@ with open(os.path.realpath(export_name), mode="w") as outfh:
     outfh.write("window.c_base_events = " + json.dumps(c_base_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.c_base_seminars= " + json.dumps(seminar_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.lastUpdate = \"" + datetime.now().isoformat() +" UTC\";\n")
+
+with open(os.path.realpath(merged_name) , 'wb') as f:
+    f.write(newcal.as_string())
+    f.close()
 
 with open(os.path.realpath(error_name), mode="w") as outfh:
     outfh.write('window.c_base_errors = "None";\n')

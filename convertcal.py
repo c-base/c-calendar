@@ -139,13 +139,13 @@ merged_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'c-bas
 error_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'errors.js')
 
 try:
-    ics = urllib.request.urlopen('https://c.c-base.org/calendar/events.ics').read()
-    c_base_events = do_one_ics(ics, 'mainhall')
-    ics = urllib.request.urlopen('https://c.c-base.org/calendar/regulars.ics').read()
-    regular_events = do_one_ics(ics, 'mainhall')
+    events_ics = urllib.request.urlopen('https://c.c-base.org/calendar/events.ics').read()
+    c_base_events = do_one_ics(events_ics, 'mainhall')
+    regulars_ics = urllib.request.urlopen('https://c.c-base.org/calendar/regulars.ics').read()
+    regular_events = do_one_ics(regulars_ics, 'mainhall')
     url = "https://c.c-base.org/calendar/seminars.ics"
-    ics = urllib.request.urlopen(url).read()
-    seminar_events = do_one_ics(ics, "seminarraum")
+    seminars_ics = urllib.request.urlopen(url).read()
+    seminar_events = do_one_ics(seminars_ics, "seminarraum")
 except Exception as e:
     print(e)
     with open(os.path.realpath(error_name), mode="w") as outfh:
@@ -158,8 +158,17 @@ with open(os.path.realpath(export_name), mode="w") as outfh:
     outfh.write("window.c_base_seminars= " + json.dumps(seminar_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.lastUpdate = \"" + datetime.now().isoformat() +" UTC\";\n")
 
+with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.ics'), 'wb') as f:
+    f.write(events_ics)
+
+with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'regulars.ics'), 'wb') as f:
+    f.write(regulars_ics)
+
+with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'seminars.ics'), 'wb') as f:
+    f.write(seminars_ics)
+
 with open(os.path.realpath(merged_name) , 'wb') as f:
-    f.write(newcal.as_string())
+    f.write(newcal.to_ical())
     f.close()
 
 with open(os.path.realpath(error_name), mode="w") as outfh:

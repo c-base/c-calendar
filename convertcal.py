@@ -14,6 +14,7 @@ from dateutil.relativedelta import relativedelta
 import pytz
 import json
 import os
+import re
 
 from icalendar import Calendar
 
@@ -37,8 +38,9 @@ def do_one_ics(ics, default_location):
         newcal.add_component(event)
         d = event.get('dtstart').dt
         de = get_end_date(event, d)
+        title = clean_up_title(event.get('summary'))
         if not de:
-            print("Skipping event: %s" % event.get('summary'))
+            print("Skipping event: %s" % title)
             continue
 
         location = event.get('location', default_location)
@@ -51,7 +53,7 @@ def do_one_ics(ics, default_location):
         if event.get('rrule'):
             event_template = {
                 "id": ev_id,
-                "title": event.get('summary'),
+                "title": title,
                 "description": description,
                 "location": location,
                 "allDay": is_all_day
@@ -63,7 +65,7 @@ def do_one_ics(ics, default_location):
 
         current = {
             "id": ev_id,
-            "title": event.get('summary'), 
+            "title": title,
             "start": d.isoformat(), 
             "description": description,
             "location": location
@@ -77,6 +79,10 @@ def do_one_ics(ics, default_location):
         all_events.append(current)
 
     return all_events
+
+
+def clean_up_title(title):
+    return re.sub(r"\n", " ", title)
 
 
 def get_events_from_rrule(ical_event, event_template, start_date, end_date):

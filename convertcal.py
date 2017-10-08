@@ -3,7 +3,7 @@
 
 """convertcal.py: Converts several ICS files and exports a Javascript array suitable for fullcalendar.io."""
 
-__author__      = "Ricardo Band <xen@c-base.org>, Uwe Kamper <uk@c-base.org>, Cketti <cketti@c-base.org>"
+__author__      = "Ricardo Band <xen@c-base.org>, Uwe Kamper <uk@c-base.org>, cketti <cketti@c-base.org>"
 __copyright__   = "Copyright 2016-2017, Berlin, Germany"
 
 import urllib.request
@@ -93,7 +93,6 @@ def do_one_ics(ics, default_location):
             current["allDay"] = False
             current["end"] = de.isoformat()
         all_events.append(current)
-    # import pudb; pu.db
     return all_events
 
 

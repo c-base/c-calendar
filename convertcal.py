@@ -20,6 +20,18 @@ from icalendar import Calendar
 
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
+# Parameter dict used for timedeltas, e.g. timedelta(**INTO_PAST)
+# From now, what is the oldest date that we want to list?
+INTO_PAST = {
+    'days': 365
+}
+
+# Parameter dict used for timedeltas, e.g. timedelta(**INTO_FUTURE)
+# From now, what is the furthest we want to expand recurring events into the future.
+INTO_FUTURE = {
+    'days': 365
+}
+
 newcal = Calendar()
 newcal.add('prodid', '-//' + 'c-base' + '//' + 'c-base.org' + '//')
 newcal.add('version', '2.0')
@@ -29,10 +41,8 @@ def do_one_ics(ics, default_location):
     events = []
     global newcal
     cal = Calendar.from_ical(ics)
-
-    start = datetime.utcnow().replace(tzinfo=pytz.utc)
-    end = start - relativedelta(years=1)
-
+    oldest_non_recurring = datetime.utcnow().replace(tzinfo=pytz.utc) - timedelta(**INTO_PAST)
+    
     all_events = []
     for ev_id, event in enumerate(cal.walk('vevent')):
         newcal.add_component(event)
@@ -50,6 +60,7 @@ def do_one_ics(ics, default_location):
             d = datetime(d.year, d.month, d.day, tzinfo=pytz.utc)
             is_all_day = True
 
+        # If the event is a recurring event
         if event.get('rrule'):
             event_template = {
                 "id": ev_id,
@@ -62,7 +73,12 @@ def do_one_ics(ics, default_location):
             events = get_events_from_rrule(event, event_template, d, de)
             all_events.extend(events)
             continue
-
+        
+        # Ignore regular events that are older than one year.
+        if d < oldest_non_recurring:
+            print("Skipping non-recurring event %s because it is too old (%s)" %(event.get('summary'), d.isoformat()))
+        
+        # This is just a regular event, just use it as is
         current = {
             "id": ev_id,
             "title": title,
@@ -77,7 +93,7 @@ def do_one_ics(ics, default_location):
             current["allDay"] = False
             current["end"] = de.isoformat()
         all_events.append(current)
-
+    # import pudb; pu.db
     return all_events
 
 
@@ -99,8 +115,8 @@ def get_events_from_rrule(ical_event, event_template, start_date, end_date):
         for exdate_date in exdate.dts:
             ruleset.exdate(exdate_date.dt.replace(tzinfo=None))
 
-    after = datetime.utcnow() - timedelta(days=90)
-    before = datetime.utcnow() + timedelta(days=365)
+    after = datetime.utcnow() - timedelta(**INTO_PAST)
+    before = datetime.utcnow() + timedelta(**INTO_FUTURE)
     rrule_instances = list(ruleset.between(after, before))
     for rrule_instance in rrule_instances:
         event = copy(event_template)

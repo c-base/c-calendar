@@ -3,8 +3,8 @@
 
 """convertcal.py: Converts several ICS files and exports a Javascript array suitable for fullcalendar.io."""
 
-__author__      = "Ricardo Band <xen@c-base.org>, Uwe Kamper <uk@c-base.org>"
-__copyright__   = "Copyright 2016, Berlin, Germany"
+__author__      = "Ricardo Band <xen@c-base.org>, Uwe Kamper <uk@c-base.org>, Cketti <cketti@c-base.org>"
+__copyright__   = "Copyright 2016-2017, Berlin, Germany"
 
 import urllib.request
 from copy import copy

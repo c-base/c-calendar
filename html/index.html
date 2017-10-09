@@ -134,9 +134,42 @@
     <script src="exported/events.js"></script>
     <script src="exported/errors.js"></script>
     <script>
+        function decodeParameters(parametersString) {
+            var parameters = {};
+            var keyValuePairs = parametersString.split('&');
+            for (var i = 0; i < keyValuePairs.length; i++) {
+                var pair = keyValuePairs[i].split('=');
+                var key = pair[0];
+                var value = pair[1];
+                parameters[key] = value;
+            }
+
+            return parameters;
+        }
+
+        function getViewStateFromFragment() {
+            var fragment = window.location.hash.substring(1);
+            var parameters = decodeParameters(fragment);
+
+            var view = parameters.view;
+            var date = parameters.date;
+
+            if (view == null || date == null) {
+                return null;
+            }
+
+            return {
+                'view': view,
+                'date': date
+            }
+        }
+
         $(document).ready(function () {
 
             // page is now ready, initialize the calendar...
+            var viewState = getViewStateFromFragment();
+            var startView = (viewState != null) ? viewState.view : 'month';
+            var startDate = (viewState != null) ? viewState.date : null;
 
             var colors = {
                 'c_base_events': '#14105D',
@@ -144,7 +177,10 @@
                 'c_base_seminars': '#145D1B'
             };
 
-            $('#calendar').fullCalendar({
+            var calendar = $('#calendar');
+            calendar.fullCalendar({
+                defaultView: startView,
+                defaultDate: startDate,
                 theme: true,
                 timeFormat: 'HH:mm',
                 titleFormat: 'MMMM YYYY',
@@ -229,11 +265,25 @@
                     day: {
                         titleFormat: 'LL'
                     }
+                },
+                eventAfterAllRender: function(view) {
+                    var date = calendar.fullCalendar('getDate');
+                    window.location.hash = "view=" + view.type + "&date=" + date.format('YYYY-MM-DD');
                 }
             });
             $("#last-update").html(window.lastUpdate);
             $("#error-display").html(window.c_base_errors);
             $("spinner").hide();
+
+            $(window).on('popstate', function() {
+                var viewState = getViewStateFromFragment();
+                if (viewState != null) {
+                    calendar.fullCalendar('changeView', viewState.view, viewState.date);
+                } else {
+                    calendar.fullCalendar('changeView', 'month');
+                    calendar.fullCalendar('today');
+                }
+            });
         });
     </script>
 </body>

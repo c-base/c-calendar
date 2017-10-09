@@ -168,8 +168,12 @@ try:
     url = "https://c.c-base.org/calendar/seminars.ics"
     seminars_ics = urllib.request.urlopen(url).read()
     seminar_events = do_one_ics(seminars_ics, "seminarraum")
+    
+    # No errors happened. Make it known to the world!
+    with open(os.path.realpath(error_name), mode="w") as outfh:
+        outfh.write('window.c_base_errors = "";\n')
 except Exception as e:
-    print(e)
+    print('### ERROR : ', str(e))
     with open(os.path.realpath(error_name), mode="w") as outfh:
         outfh.write('window.c_base_errors = ' + json.dumps(str(e)) + ";\n")
     exit(1)

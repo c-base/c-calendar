@@ -77,7 +77,8 @@ def do_one_ics(ics, default_location):
         # Ignore regular events that are older than one year.
         if d < oldest_non_recurring:
             print("Skipping non-recurring event %s because it is too old (%s)" %(event.get('summary'), d.isoformat()))
-        
+            continue
+            
         # This is just a regular event, just use it as is
         current = {
             "id": ev_id,

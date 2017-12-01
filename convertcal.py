@@ -26,6 +26,8 @@ INTO_PAST = {
     'days': 365
 }
 
+berlin = pytz.timezone('Europe/Amsterdam')
+
 # Parameter dict used for timedeltas, e.g. timedelta(**INTO_FUTURE)
 # From now, what is the furthest we want to expand recurring events into the future.
 INTO_FUTURE = {
@@ -120,7 +122,8 @@ def get_events_from_rrule(ical_event, event_template, start_date, end_date):
     rrule_instances = list(ruleset.between(after, before))
     for rrule_instance in rrule_instances:
         event = copy(event_template)
-        event['start'] = rrule_instance.isoformat()
+        event['start'] = berlin.localize(rrule_instance).isoformat()
+        print('++++', event['start'])
 
         if not event["allDay"]:
             instance_end_date = datetime(rrule_instance.year, rrule_instance.month, rrule_instance.day,

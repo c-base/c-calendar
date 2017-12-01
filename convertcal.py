@@ -123,12 +123,11 @@ def get_events_from_rrule(ical_event, event_template, start_date, end_date):
     for rrule_instance in rrule_instances:
         event = copy(event_template)
         event['start'] = berlin.localize(rrule_instance).isoformat()
-        print('++++', event['start'])
 
         if not event["allDay"]:
             instance_end_date = datetime(rrule_instance.year, rrule_instance.month, rrule_instance.day,
                                          end_date.hour, end_date.minute, end_date.second)
-            event["end"] = instance_end_date.isoformat()
+            event["end"] = berlin.localize(instance_end_date).isoformat()
 
         events.append(event)
 

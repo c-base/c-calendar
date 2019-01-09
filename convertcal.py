@@ -159,6 +159,7 @@ def get_end_date(event, start_date):
 
 
 export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.js')
+export_json_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.json')
 merged_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'c-base-events.ics')
 error_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'errors.js')
 
@@ -185,6 +186,16 @@ with open(os.path.realpath(export_name), mode="w") as outfh:
     outfh.write("window.c_base_events = " + json.dumps(c_base_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.c_base_seminars= " + json.dumps(seminar_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.lastUpdate = \"" + datetime.now().isoformat() +" UTC\";\n")
+
+all_events = {
+    "c_base_regulars": regular_events,
+    "c_base_events": c_base_events,
+    "c_base_seminars": seminar_events,
+    "lastUpdate": datetime.now().isoformat() +" UTC"
+}
+
+with open(os.path.realpath(export_json_name), mode="w") as outfh:
+    outfh.write(json.dumps(all_events, indent=4, sort_keys=True) + "\n")
 
 with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.ics'), 'wb') as f:
     f.write(events_ics)

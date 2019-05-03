@@ -15,6 +15,8 @@ import pytz
 import json
 import os
 import re
+import sys
+import traceback
 
 from icalendar import Calendar
 
@@ -100,6 +102,8 @@ def do_one_ics(ics, default_location):
 
 
 def clean_up_title(title):
+    if title == None:
+        return "Kein Titel"
     return re.sub(r"\n", " ", title)
 
 
@@ -176,6 +180,7 @@ try:
     with open(os.path.realpath(error_name), mode="w") as outfh:
         outfh.write('window.c_base_errors = "";\n')
 except Exception as e:
+    traceback.print_exc(file=sys.stdout)
     print('### ERROR : ', str(e))
     with open(os.path.realpath(error_name), mode="w") as outfh:
         outfh.write('window.c_base_errors = ' + json.dumps(str(e)) + ";\n")

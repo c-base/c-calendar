@@ -53,6 +53,9 @@ def do_one_ics(ics, default_location):
         d = event.get('dtstart').dt
         de = get_end_date(event, d)
         title = clean_up_title(event.get('summary'))
+        if d.year == 2019 and d.month == 5:
+            print(repr(d))
+            print("---->", title, event.get("rrule"))
         if not de:
             print("Skipping event: %s" % title)
             continue
@@ -80,7 +83,7 @@ def do_one_ics(ics, default_location):
         
         # Ignore regular events that are older than one year.
         if d < oldest_non_recurring:
-            print("Skipping non-recurring event %s because it is too old (%s)" %(event.get('summary'), d.isoformat()))
+            # print("Skipping non-recurring event %s because it is too old (%s)" %(event.get('summary'), d.isoformat()))
             continue
             
         # This is just a regular event, just use it as is
@@ -132,7 +135,7 @@ def get_events_from_rrule(ical_event, event_template, start_date, end_date):
             instance_end_date = datetime(rrule_instance.year, rrule_instance.month, rrule_instance.day,
                                          end_date.hour, end_date.minute, end_date.second)
             event["end"] = berlin.localize(instance_end_date).isoformat()
-
+        print(repr(event))
         events.append(event)
 
     return events
@@ -166,12 +169,15 @@ export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'event
 export_json_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.json')
 merged_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'c-base-events.ics')
 error_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'errors.js')
+online_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'online.js')
 
 try:
     events_ics = urllib.request.urlopen('https://c.c-base.org/calendar/events.ics').read()
     c_base_events = do_one_ics(events_ics, 'mainhall')
     regulars_ics = urllib.request.urlopen('https://c.c-base.org/calendar/regulars.ics').read()
     regular_events = do_one_ics(regulars_ics, 'mainhall')
+    online_ics = urllib.request.urlopen('https://c.c-base.org/calendar/online.ics').read()
+    online_events = do_one_ics(online_ics, 'https://jitsi.c-base.org/mainhall')
     url = "https://c.c-base.org/calendar/seminars.ics"
     seminars_ics = urllib.request.urlopen(url).read()
     seminar_events = do_one_ics(seminars_ics, "seminarraum")
@@ -190,12 +196,14 @@ with open(os.path.realpath(export_name), mode="w") as outfh:
     outfh.write("window.c_base_regulars = " + json.dumps(regular_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.c_base_events = " + json.dumps(c_base_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.c_base_seminars= " + json.dumps(seminar_events, indent=4, sort_keys=True) + ";\n")
+    outfh.write("window.c_base_online = " + json.dumps(online_events, indent=4, sort_keys=True) + ";\n")
     outfh.write("window.lastUpdate = \"" + datetime.now().isoformat() +" UTC\";\n")
 
 all_events = {
     "c_base_regulars": regular_events,
     "c_base_events": c_base_events,
     "c_base_seminars": seminar_events,
+    "c_base_online": online_events,
     "lastUpdate": datetime.now().isoformat() +" UTC"
 }
 
@@ -210,6 +218,9 @@ with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'regulars.
 
 with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'seminars.ics'), 'wb') as f:
     f.write(seminars_ics)
+
+with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'online.ics'), 'wb') as f:
+    f.write(online_ics)
 
 with open(os.path.realpath(merged_name) , 'wb') as f:
     f.write(newcal.to_ical())

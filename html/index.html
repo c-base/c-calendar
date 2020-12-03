@@ -27,6 +27,25 @@
         <a href="https://www.c-base.org/cv50f/core/impressum.html">contact</a>
     </div>
 
+         <div style="text-align: center; margin-top: 100px;">
+        <img src="/cbiohazard.png" style="width: 218px; height: 190px"/>
+     </div>
+     <div style="text-align: center; margin: 0 20% 0 20%">
+	     <div style="color: yellow; font-weight: bold; background-color: black; padding: 10px;">
+        <p>Due to a newly discovered fast spreading virus the spacestation will cancel all planned events until further notice. Please check <a href="https://logbuch.c-base.org/archives/4933">this page for details</a>.
+Stay safe, wash you tentacles! Thank you for considering the safety-instructions.</p>
+        <p>Aufgrund eines neuartigen, sich schnell ausbreitenden Virus sagt die  Raumstation bis auf weiteres alle öffentlichen Veranstaltungen ab. Aktuelle Details auf <a href="https://logbuch.c-base.org/archives/4933">dieser Seite</a>.
+Passt auf Euch auf, wascht Eure Tentakel!
+Danke für die Beachtung der Sicherheitshinweise.</p>
+     </div>
+     <div style="text-align: center; background: #000;">
+        <a style="color: black; padding: 5px; background: yellow; font-size: 18px;" href="https://logbuch.c-base.org/archives/4933">DETAILS</a>
+     </div>
+     </div>
+
+     <h1 style="margin: 40px 50px 10px 50px;">No on-site events at c-base at the moment, see the calendar below for online-only events.</h1>
+     <h1 style="margin: 10px 50px 10px 50px;">Zur Zeit keine Events an Bord der Station. Online-Events siehe unten im Kalender.</h1>
+
     <div id="calendar" style="margin: 100px 50px 10px 50px;">
         <!--<h1 id="spinner">Kalender wird geladen ...</h1>-->
     </div>
@@ -40,6 +59,7 @@
 	    <p>Nur Mainhall-Events / events in mainhall only: <tt><a href="/calendar/exported/events.ics">https://www.c-base.org/calendar/exported/events.ics</a></tt></p>
 	    <p>Wiederkehrende Events / regular events: <tt><a href="/calendar/exported/regulars.ics">https://www.c-base.org/calendar/exported/regulars.ics</a></tt></p>
 	    <p>Seminarraum / seminar room: <tt><a href="/calendar/exported/seminars.ics">https://www.c-base.org/calendar/exported/seminars.ics</a></tt></p>
+	    <p>Online / online-only events: <tt><a href="/calendar/exported/online.ics">https://www.c-base.org/calendar/exported/online.ics</a></tt></p>
     </div>
     <div id="dialog-legend" title="Colors">
         <table>
@@ -51,6 +71,9 @@
             </tr>
             <tr>
                 <td id="c_base_seminars">Seminars</td>
+            </tr>
+            <tr>
+                <td id="c_base_online">Online</td>
             </tr>
         </table>
     </div>
@@ -124,7 +147,8 @@
             var colors = {
                 'c_base_events': '#14105D',
                 'c_base_regulars': '#055D53',
-                'c_base_seminars': '#145D1B'
+                'c_base_seminars': '#145D1B',
+                'c_base_online': '#5D1459'
             };
 
             var calendar = $('#calendar');
@@ -169,14 +193,17 @@
                 locale: 'de',
                 navLinks: true, // can click day/week names to navigate views
                 eventSources: [{
-                    events: window.c_base_events,
+                    events: [], // window.c_base_events,
                     color: colors.c_base_events      // an option!
                 }, {
-                    events: window.c_base_regulars,
+                    events: [], // window.c_base_regulars,
                     color: colors.c_base_regulars    // an option!
                 }, {
-                    events: window.c_base_seminars,
+                    events: [], // window.c_base_seminars,
                     color: colors.c_base_seminars    // an option!
+                }, {
+                    events: window.c_base_online,
+                    color: colors.c_base_online // an option!
                 }
                 ],
                 eventClick: function(calendarEvent, jsEvent, view) {

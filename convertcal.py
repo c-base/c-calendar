@@ -60,6 +60,7 @@ def do_one_ics(ics, default_location):
             print("Skipping event: %s" % title)
             continue
 
+        uid = event.get('uid', '')
         location = event.get('location', default_location)
         description = event.get('description', '')
         is_all_day = False
@@ -92,7 +93,8 @@ def do_one_ics(ics, default_location):
             "title": title,
             "start": d.isoformat(), 
             "description": description,
-            "location": location
+            "location": location,
+            "uid": uid
         }
         if is_all_day == True:
             current["allDay"] = True

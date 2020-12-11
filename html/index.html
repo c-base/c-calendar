@@ -1,269 +1,145 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>c-base >>> Kalender unter Berlin</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta name="description" content="c-base event calendar."/>
-    <link rel="stylesheet" type="text/css" href="https://www.c-base.org/cv6/styles.css">
-    <link rel="stylesheet" href="fullcalendar-3.5.1/fullcalendar.css"/>
-    <link rel="stylesheet" href="lib/css/jquery-ui.min.css">
-    <!--<link rel="stylesheet" href="lib/css/jquery-ui.structure.min.css">-->
-    <!--<link rel="stylesheet" href="lib/css/jquery-ui.theme.min.css">-->
-    <link href="custom.css" rel="stylesheet"/>
-    <link href="c-base.css" rel="stylesheet"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>c-base >>> Kalender unter Berlin</title>
+  <meta name="description" content="c-base event calendar">
+
+  <link rel="stylesheet" href="../static/css/normalize.css">
+  <link rel="stylesheet" href="../static/css/c-base.css">
+  <link rel="stylesheet" href="fullcalendar-3.5.1/fullcalendar.css">
+  <link rel="stylesheet" href="lib/css/jquery-ui.min.css">
+  <link rel="stylesheet" href="calendar.css">
 </head>
 
-<body>
-    <div id="logo"><img src="https://www.c-base.org/cv6/images/c-base_raumstation.gif" width="327" height="32"
-                        alt="c-base Raumstation unter Berlin" />
-    </div>
-    <div id="meta_navi">
-        <a href="https://www.c-base.org/">home</a> |
-        <a href="https://www.c-base.org/cv50f/">about</a> |
-        <a href="https://logbuch.c-base.org">logbuch</a> |
-        <a href="https://audioblog.c-base.org">audioblog</a> |
-        <a href="https://wiki.c-base.org/coredump/">wiki</a> |
-        <a href="https://www.c-base.org/cv50f/core/impressum.html">impressum</a> |
-        <a href="https://www.c-base.org/cv50f/core/impressum.html">contact</a>
-    </div>
+<body dir="ltr">
 
-         <div style="text-align: center; margin-top: 100px;">
-        <img src="/cbiohazard.png" style="width: 218px; height: 190px"/>
-     </div>
-     <div style="text-align: center; margin: 0 20% 0 20%">
-	     <div style="color: yellow; font-weight: bold; background-color: black; padding: 10px;">
-        <p>Due to a newly discovered fast spreading virus the spacestation will cancel all planned events until further notice. Please check <a href="https://logbuch.c-base.org/archives/4933">this page for details</a>.
-Stay safe, wash you tentacles! Thank you for considering the safety-instructions.</p>
-        <p>Aufgrund eines neuartigen, sich schnell ausbreitenden Virus sagt die  Raumstation bis auf weiteres alle öffentlichen Veranstaltungen ab. Aktuelle Details auf <a href="https://logbuch.c-base.org/archives/4933">dieser Seite</a>.
-Passt auf Euch auf, wascht Eure Tentakel!
-Danke für die Beachtung der Sicherheitshinweise.</p>
-     </div>
-     <div style="text-align: center; background: #000;">
-        <a style="color: black; padding: 5px; background: yellow; font-size: 18px;" href="https://logbuch.c-base.org/archives/4933">DETAILS</a>
-     </div>
-     </div>
+  <nav class="navigation">
+    <input class="menu-button" type="checkbox" id="menu-button" />
+    <label class="menu-icon" for="menu-button"><span class="navicon"></span></label>
+    <ul class="menu">
+      <li><a href="https://www.c-base.org/">home</a></li>
+      <li><a href="https://www.c-base.org/cv50f/">about</a></li>
+      <li><a href="https://logbuch.c-base.org">logbuch</a></li>
+      <li><a href="https://audioblog.c-base.org">audioblog</a></li>
+      <li><a href="https://wiki.c-base.org/coredump/">wiki</a></li>
+      <li><a href="https://www.c-base.org/cv50f/core/impressum.html">impressum</a></li>
+      <li><a href="https://www.c-base.org/cv50f/core/impressum.html">contact</a></li>
+    </ul>
+  </nav>
 
-     <h1 style="margin: 100px 50px 10px 50px;">No on-site events at c-base at the moment, see the calendar below for online-only events.</h1>
-     <h1 style="margin: 10px 50px 10px 50px;">Zur Zeit keine Events an Bord der Station. Online-Events siehe unten im Kalender.</h1>
+  <section class="container">
+    <main>
 
-    <div id="calendar" style="margin: 100px 50px 10px 50px;">
-        <!--<h1 id="spinner">Kalender wird geladen ...</h1>-->
-    </div>
-    <div style="margin: 0px 50px 50px 50px;">
+      <section class="note">
+        <p class="lang-en">No on-site events at c-base at the moment, see the calendar below for online-only events.</p>
+        <p class="lang-de">Zur Zeit keine Events an Bord der Station. Online-Events siehe unten im Kalender.</p>
+      </section>
+
+      <div id="calendar"></div>
+
+      <div id="calendar-export-state">
         Stand / last exported at: <span id="last-update">unbekannt / unknown</span>,
-	Errors: <span id="error-display">---</span>
+        Errors: <span id="error-display">---</span>
+      </div>
+
+      <details id="ics-links">
+        <summary>iCalendar/ICS</summary>
+        <ul>
+          <li>Gesammelte iCalendar/ICS-Datei / download as iCalendar/ICS file : <tt><a href="/calendar/exported/c-base-events.ics">https://www.c-base.org/calendar/exported/c-base-events.ics</a></tt></li>
+          <li>Nur Mainhall-Events / events in mainhall only: <tt><a href="/calendar/exported/events.ics">https://www.c-base.org/calendar/exported/events.ics</a></tt></li>
+          <li>Wiederkehrende Events / regular events: <tt><a href="/calendar/exported/regulars.ics">https://www.c-base.org/calendar/exported/regulars.ics</a></tt></li>
+          <li>Seminarraum / seminar room: <tt><a href="/calendar/exported/seminars.ics">https://www.c-base.org/calendar/exported/seminars.ics</a></tt></li>
+          <li>Online / online-only events: <tt><a href="/calendar/exported/online.ics">https://www.c-base.org/calendar/exported/online.ics</a></tt></li>
+        </ul>
+      </details>
+
+    </main>
+  </section>
+
+  <div id="dialog-legend" aria-hidden="true" class="modal">
+    <div tabindex="-1" data-micromodal-close class="dialog-overlay">
+
+      <div role="dialog" aria-modal="true" aria-labelledby="dialog-legend-title" class="dialog">
+        <header>
+          <h2 id="dialog-legend-title">
+            Colors
+          </h2>
+
+          <button aria-label="Close modal" data-micromodal-close>×</button>
+        </header>
+
+        <div id="dialog-legend-content" class="content">
+          <table>
+            <tr>
+              <td id="c_base_events">Events</td>
+            </tr>
+            <tr>
+              <td id="c_base_regulars">Regulars</td>
+            </tr>
+            <tr>
+              <td id="c_base_seminars">Seminars</td>
+            </tr>
+            <tr>
+              <td id="c_base_online">Online</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
     </div>
-    <div style="margin: 0px 50px 150px 50px;">
-	    <p>Gesammelte iCalendar/ICS-Datei / download as iCalendar/ICS file : <tt><a href="/calendar/exported/c-base-events.ics">https://www.c-base.org/calendar/exported/c-base-events.ics</a></tt></p>
-	    <p><b>Download als Einzel-Kalender / Download as seperate calender files</b></p>
-	    <p>Nur Mainhall-Events / events in mainhall only: <tt><a href="/calendar/exported/events.ics">https://www.c-base.org/calendar/exported/events.ics</a></tt></p>
-	    <p>Wiederkehrende Events / regular events: <tt><a href="/calendar/exported/regulars.ics">https://www.c-base.org/calendar/exported/regulars.ics</a></tt></p>
-	    <p>Seminarraum / seminar room: <tt><a href="/calendar/exported/seminars.ics">https://www.c-base.org/calendar/exported/seminars.ics</a></tt></p>
-	    <p>Online / online-only events: <tt><a href="/calendar/exported/online.ics">https://www.c-base.org/calendar/exported/online.ics</a></tt></p>
+  </div>
+
+  <div id="dialog-details" aria-hidden="true" class="modal">
+    <div tabindex="-1" data-micromodal-close class="dialog-overlay">
+
+      <div role="dialog" aria-modal="true" aria-labelledby="dialog-details-title" class="dialog">
+        <header>
+          <h2 id="dialog-details-title">
+            Details
+          </h2>
+
+          <button aria-label="Close modal" data-micromodal-close>×</button>
+        </header>
+
+        <div id="dialog-details-content" class="content">
+          <table>
+              <tr>
+                  <th>Date:</th>
+                  <td id="event-day"></td>
+              </tr>
+              <tr>
+                  <th>Start:</th>
+                  <td id="event-start"></td>
+              </tr>
+              <tr>
+                  <th>End:</th>
+                  <td id="event-end"></td>
+              </tr>
+              <tr>
+                  <th>Location:</th>
+                  <td id="event-location"></td>
+              </tr>
+          </table>
+          <div id="event-description"></div>
+        </div>
+      </div>
+
     </div>
-    <div id="dialog-legend" title="Colors">
-        <table>
-            <tr>
-                <td id="c_base_events">Events</td>
-            </tr>
-            <tr>
-                <td id="c_base_regulars">Regulars</td>
-            </tr>
-            <tr>
-                <td id="c_base_seminars">Seminars</td>
-            </tr>
-            <tr>
-                <td id="c_base_online">Online</td>
-            </tr>
-        </table>
-    </div>
+  </div>
 
-    <div id="dialog-details">
-        <table>
-            <tr>
-                <td>Start:</td>
-                <td id="start"></td>
-            </tr>
-            <tr>
-                <td>End:</td>
-                <td id="end"></td>
-            </tr>
-            <tr>
-                <td>Location</td>
-                <td id="location"></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td id="description"></td>
-            </tr>
-        </table>
-    </div>
+  <script src="lib/micromodal.min.js"></script>
+  <script src="lib/purify.min.js"></script>
+  <script src="lib/marked.min.js"></script>
+  <script src="lib/jquery-3.1.1.min.js"></script>
+  <script src="lib/moment-with-locales.js"></script>
+  <script src="fullcalendar-3.5.1/fullcalendar.min.js"></script>
+  <script src="fullcalendar-3.5.1/locale-all.js"></script>
+  <script src="exported/events.js"></script>
+  <script src="exported/errors.js"></script>
+  <script src="c-base-calendar.js"></script>
 
-    <script src="lib/jquery-3.1.1.min.js"></script>
-    <script src="lib/jquery-ui-1.12.1-custom.min.js"></script>
-    <script src="lib/moment-with-locales.js"></script>
-    <script src="fullcalendar-3.5.1/fullcalendar.min.js"></script>
-    <script src="fullcalendar-3.5.1/locale-all.js"></script>
-    <script src="exported/events.js"></script>
-    <script src="exported/errors.js"></script>
-    <script>
-        function decodeParameters(parametersString) {
-            var parameters = {};
-            var keyValuePairs = parametersString.split('&');
-            for (var i = 0; i < keyValuePairs.length; i++) {
-                var pair = keyValuePairs[i].split('=');
-                var key = pair[0];
-                var value = pair[1];
-                parameters[key] = value;
-            }
-
-            return parameters;
-        }
-
-        function getViewStateFromFragment() {
-            var fragment = window.location.hash.substring(1);
-            var parameters = decodeParameters(fragment);
-
-            var view = parameters.view;
-            var date = parameters.date;
-
-            if (view == null || date == null) {
-                return null;
-            }
-
-            return {
-                'view': view,
-                'date': date
-            }
-        }
-
-        $(document).ready(function () {
-
-            // page is now ready, initialize the calendar...
-            var viewState = getViewStateFromFragment();
-            var startView = (viewState != null) ? viewState.view : 'month';
-            var startDate = (viewState != null) ? viewState.date : null;
-
-            var colors = {
-                'c_base_events': '#14105D',
-                'c_base_regulars': '#055D53',
-                'c_base_seminars': '#145D1B',
-                'c_base_online': '#5D1459'
-            };
-
-            var calendar = $('#calendar');
-            calendar.fullCalendar({
-                height: 'auto',
-                defaultView: startView,
-                defaultDate: startDate,
-                theme: true,
-                timeFormat: 'HH:mm',
-                titleFormat: 'MMMM YYYY',
-                customButtons: {
-                    info: {
-                        // text: "Legend",
-                        icon: 'info',
-                        themeIcon: 'info',
-                        click: function (event) {
-                            var $dialog = $('#dialog-legend');
-
-                            for(var kind in colors) {
-                                if (colors.hasOwnProperty(kind)) {
-                                    $dialog.find('#'+kind).css({ backgroundColor: colors[kind], color: 'white'});
-                                }
-                            }
-
-                            $dialog.dialog({
-                                modal: true,
-                                title: 'Colors',
-                                buttons: {
-                                    Close: function() {
-                                        $(this).dialog("close");
-                                    }
-                                }
-                            });
-                        }
-                    }
-                },
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'info month,agendaWeek,agendaDay'
-                },
-                locale: 'de',
-                navLinks: true, // can click day/week names to navigate views
-                eventSources: [{
-                    events: [], // window.c_base_events,
-                    color: colors.c_base_events      // an option!
-                }, {
-                    events: [], // window.c_base_regulars,
-                    color: colors.c_base_regulars    // an option!
-                }, {
-                    events: [], // window.c_base_seminars,
-                    color: colors.c_base_seminars    // an option!
-                }, {
-                    events: window.c_base_online,
-                    color: colors.c_base_online // an option!
-                }
-                ],
-                eventClick: function(calendarEvent, jsEvent, view) {
-                    var $template = $("#dialog-details"),
-                        attributes = ['start', 'end', 'location', 'description'],
-                        html = "";
-
-                    for (var i = 0; i < attributes.length; i++) {
-                        html = calendarEvent[attributes[i]];
-                        if (moment.isMoment(calendarEvent[attributes[i]])) {
-                            html = html.format();
-                        }
-
-                        $template.find('#'+attributes[i]).html(html);
-                    }
-
-                    $template.dialog({
-                        modal: true,
-                        resizable: false,
-                        title: calendarEvent.title,
-                        buttons: {
-                            Close: function() {
-                                $(this).dialog("close");
-                            }
-                        }
-                    })
-                },
-                views: {
-                    month: { // name of view
-                        titleFormat: 'MMMM YYYY',
-                        // other view-specific options here
-                        displayEventEnd: true
-                    },
-                    week: {
-                        titleFormat: 'LL'
-                    },
-                    day: {
-                        titleFormat: 'LL'
-                    }
-                },
-                eventAfterAllRender: function(view) {
-                    var date = calendar.fullCalendar('getDate');
-                    window.location.hash = "view=" + view.type + "&date=" + date.format('YYYY-MM-DD');
-                }
-            });
-            $("#last-update").html(window.lastUpdate);
-            $("#error-display").html(window.c_base_errors);
-            $("spinner").hide();
-
-            $(window).on('popstate', function() {
-                var viewState = getViewStateFromFragment();
-                if (viewState != null) {
-                    calendar.fullCalendar('changeView', viewState.view, viewState.date);
-                } else {
-                    calendar.fullCalendar('changeView', 'month');
-                    calendar.fullCalendar('today');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
-

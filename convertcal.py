@@ -75,7 +75,8 @@ def do_one_ics(ics, default_location):
                 "title": title,
                 "description": description,
                 "location": location,
-                "allDay": is_all_day
+                "allDay": is_all_day,
+                "uid": uid,
             }
 
             events = get_events_from_rrule(event, event_template, d, de)

@@ -130,8 +130,9 @@ def get_events_from_rrule(ical_event, event_template, start_date, end_date):
     after = datetime.utcnow() - timedelta(**INTO_PAST)
     before = datetime.utcnow() + timedelta(**INTO_FUTURE)
     rrule_instances = list(ruleset.between(after, before))
-    for rrule_instance in rrule_instances:
+    for num, rrule_instance in enumerate(rrule_instances, start = 1):
         event = copy(event_template)
+        event['uid'] = "{}-{}".format(event_template['uid'], num)
         event['start'] = berlin.localize(rrule_instance).isoformat()
 
         if not event["allDay"]:

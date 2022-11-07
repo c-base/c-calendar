@@ -9,8 +9,7 @@ __copyright__   = "Copyright 2016-2017, Berlin, Germany"
 import urllib.request
 from copy import copy
 from dateutil.rrule import rrulestr, rruleset
-from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
+from datetime import datetime, timedelta, date
 import pytz
 import json
 import os
@@ -125,7 +124,18 @@ def get_events_from_rrule(ical_event, event_template, start_date, end_date):
     exdates = get_exdates(ical_event)
     for exdate in exdates:
         for exdate_date in exdate.dts:
-            ruleset.exdate(exdate_date.dt.replace(tzinfo=None))
+            datetime_or_date = exdate_date.dt
+            if isinstance(datetime_or_date, datetime):
+                exclusion_datetime = datetime_or_date.replace(tzinfo=None)
+            elif isinstance(datetime_or_date, date):
+                exclusion_datetime = datetime(
+                    year=datetime_or_date.year,
+                    month=datetime_or_date.month,
+                    day=datetime_or_date.day)
+            else:
+                continue
+
+            ruleset.exdate(exclusion_datetime)
 
     after = datetime.utcnow() - timedelta(**INTO_PAST)
     before = datetime.utcnow() + timedelta(**INTO_FUTURE)

@@ -1,0 +1,23 @@
+[project]
+name = "c-calendar"
+version = "2.0.0"
+description = "a calendar for www.c-base.org"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pytz>=2025.2",
+    "icalendar>=3.11.7",
+    "python-dateutil>=2.6.0"
+]
+
+[tool.pytest.ini_options]
+python_files = "tests.py test_*.py *_tests.py"
+testpaths = [
+    "tests",
+]
+pythonpath = "."
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.0",
+]

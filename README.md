@@ -17,10 +17,16 @@ Then you can run `/opt/c-calendar/run_convert.sh` from anywhere (e.g. a cronjob)
 
 ## How to setup for development
 
+Run the following commands on your dev machine:
+
 ```
 git clone https://github.com/uwekamper/c-calendar.git
 cd c-calendar
 uv sync 
 ```
 
-Running the script: `uv run convertcal.py`
+During development:
+
+- Running the script: `uv run pytest`
+- Running the script: `uv run convertcal.py`
+

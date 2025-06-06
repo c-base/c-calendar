@@ -210,10 +210,8 @@ def event_to_json(event, json_id, default_location):
         'location': event.get('location', default_location),
         'allDay': is_all_day,
         'start': date_start.isoformat(),
+        'end': get_end_date(event, date_start).isoformat(),
     }
-
-    if not is_all_day:
-        json_data['end'] = get_end_date(event, date_start).isoformat()
 
     return json_data
 

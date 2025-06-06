@@ -20,7 +20,7 @@ Then you can run `/opt/c-calendar/run_convert.sh` from anywhere (e.g. a cronjob)
 Run the following commands on your dev machine:
 
 ```
-git clone https://github.com/uwekamper/c-calendar.git
+git clone https://github.com/c-base/c-calendar.git
 cd c-calendar
 uv sync 
 ```

@@ -1,3 +1,4 @@
 icalendar==3.11
 python-dateutil==2.6.0
-pytz==2017.3
+pytz==2025.2
+pytest==8.4.0

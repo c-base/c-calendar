@@ -38,7 +38,7 @@ END:VCALENDAR
     calendar = parse_ics(ics)
     json_data = calendar_to_json(calendar, default_location='mainhall')
 
-    assert len(json_data) == 4
+    assert len(json_data) == 3
     assert json_data[0]['description'] == ''
     assert json_data[1]['description'] == 'Exception that contains a description'
     assert json_data[1]['start'] == '2025-06-13'

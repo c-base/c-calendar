@@ -3,8 +3,8 @@
 
 """convertcal.py: Converts several ICS files and exports a Javascript array suitable for fullcalendar.io."""
 
-__author__      = "Ricardo Band <xen@c-base.org>, Uwe Kamper <uk@c-base.org>, cketti <cketti@c-base.org>"
-__copyright__   = "Copyright 2016-2017, Berlin, Germany"
+__author__ = "Ricardo Band <xen@c-base.org>, Uwe Kamper <uk@c-base.org>, cketti <cketti@c-base.org>"
+__copyright__ = "Copyright 2016-2025, Berlin, Germany"
 
 import urllib.request
 from copy import copy
@@ -27,7 +27,7 @@ INTO_PAST = {
     'days': 365
 }
 
-berlin = pytz.timezone('Europe/Amsterdam')
+berlin = pytz.timezone('Europe/Berlin')
 
 # Parameter dict used for timedeltas, e.g. timedelta(**INTO_FUTURE)
 # From now, what is the furthest we want to expand recurring events into the future.
@@ -35,136 +35,83 @@ INTO_FUTURE = {
     'days': 365
 }
 
-newcal = Calendar()
-newcal.add('prodid', '-//' + 'c-base' + '//' + 'c-base.org' + '//')
-newcal.add('version', '2.0')
-newcal.add('x-wr-calname', 'c-base events')
 
-def do_one_ics(ics, default_location):
-    events = []
-    global newcal
-    cal = Calendar.from_ical(ics)
-    oldest_non_recurring = datetime.utcnow().replace(tzinfo=pytz.utc) - timedelta(**INTO_PAST)
-    
-    all_events = []
-    for ev_id, event in enumerate(cal.walk('vevent')):
-        newcal.add_component(event)
-        d = event.get('dtstart').dt
-        de = get_end_date(event, d)
-        title = clean_up_title(event.get('summary'))
-        if d.year == 2019 and d.month == 5:
-            print(repr(d))
-            print("---->", title, event.get("rrule"))
-        if not de:
-            print("Skipping event: %s" % title)
-            continue
+class EventContainer:
+    """
+    Container for an `icalendar.cal.Event` and its associated exception event entries.
+    """
 
-        uid = event.get('uid', '')
-        location = event.get('location', default_location)
-        description = event.get('description', '')
-        is_all_day = False
-        if not isinstance(d, datetime):
-            d = datetime(d.year, d.month, d.day, tzinfo=pytz.utc)
-            is_all_day = True
+    def __init__(self):
+        self.main_event = None
+        self.overrides = {}
+
+
+def calendar_to_json(ics, default_location):
+    """
+    Convert iCalendar data to a dictionary that can be used to generate the data for fullcalendar.io.
+    """
+
+    grouped_events = group_events(ics)
+    return events_to_fullcalendar_json(grouped_events, default_location)
+
+
+def group_events(calendar):
+    """
+    Associate recurring events in a calendar with their exception entries.
+    """
+
+    event_containers = {}
+    for event in calendar.walk('vevent'):
+        uid = str(event.get('uid'))
+
+        try:
+            container = event_containers[uid]
+        except KeyError:
+            container = EventContainer()
+            event_containers[uid] = container
+
+        if event.get('recurrence-id'):
+            date_key = to_date_string(event.get('recurrence-id').dt)
+            container.overrides[date_key] = event
+        else:
+            container.main_event = event
+
+    return list(event_containers.values())
+
+
+def events_to_fullcalendar_json(event_containers, default_location):
+    json_events = []
+    past_cutoff_date = datetime.now().astimezone(berlin) - timedelta(**INTO_PAST)
+
+    for json_index, event_container in enumerate(event_containers):
+        event = event_container.main_event
+        date_start = to_datetime(event, 'dtstart')
 
         # If the event is a recurring event
         if event.get('rrule'):
-            event_template = {
-                "id": ev_id,
-                "title": title,
-                "description": description,
-                "location": location,
-                "allDay": is_all_day,
-                "uid": uid,
-            }
+            event_template = event_to_json(event, json_index, default_location)
+            del event_template['start']
+            try:
+                del event_template['end']
+            except KeyError:
+                pass
 
-            events = get_events_from_rrule(event, event_template, d, de)
-            all_events.extend(events)
+            date_end = get_end_date(event, date_start)
+            jsons = build_json_events_from_rrule(event_container, event_template, date_start, date_end)
+
+            json_events.extend(jsons)
             continue
-        
-        # Ignore regular events that are older than one year.
-        if d < oldest_non_recurring:
-            # print("Skipping non-recurring event %s because it is too old (%s)" %(event.get('summary'), d.isoformat()))
+
+        # Ignore events that are older than the specified cut-off date.
+        if date_start < past_cutoff_date:
             continue
-            
-        # This is just a regular event, just use it as is
-        current = {
-            "id": ev_id,
-            "title": title,
-            "start": d.isoformat(), 
-            "description": description,
-            "location": location,
-            "uid": uid
-        }
-        if is_all_day == True:
-            current["allDay"] = True
-            current["end"] = de.isoformat()
-        else:
-            current["allDay"] = False
-            current["end"] = de.isoformat()
-        all_events.append(current)
-    return all_events
 
+        # This is a non-recurring event. Use it as-is.
+        current = event_to_json(event, json_index, default_location)
+        json_events.append(current)
 
-def clean_up_title(title):
-    if title == None:
-        return "Kein Titel"
-    return re.sub(r"\n", " ", title)
+    return json_events
 
-
-def get_events_from_rrule(ical_event, event_template, start_date, end_date):
-    events = []
-
-    ical_rrule = ical_event.get('rrule')
-    ical_rrule_str = ical_rrule.to_ical().decode('utf-8')
-    rrule = rrulestr(ical_rrule_str, ignoretz=True, dtstart=start_date.replace(tzinfo=None))
-    ruleset = rruleset()
-    ruleset.rrule(rrule)
-
-    exdates = get_exdates(ical_event)
-    for exdate in exdates:
-        for exdate_date in exdate.dts:
-            datetime_or_date = exdate_date.dt
-            if isinstance(datetime_or_date, datetime):
-                exclusion_datetime = datetime_or_date.replace(tzinfo=None)
-            elif isinstance(datetime_or_date, date):
-                exclusion_datetime = datetime(
-                    year=datetime_or_date.year,
-                    month=datetime_or_date.month,
-                    day=datetime_or_date.day)
-            else:
-                continue
-
-            ruleset.exdate(exclusion_datetime)
-
-    after = datetime.utcnow() - timedelta(**INTO_PAST)
-    before = datetime.utcnow() + timedelta(**INTO_FUTURE)
-    rrule_instances = list(ruleset.between(after, before))
-    for num, rrule_instance in enumerate(rrule_instances, start = 1):
-        event = copy(event_template)
-        event['uid'] = "{}-{}".format(event_template['uid'], num)
-        event['start'] = berlin.localize(rrule_instance).isoformat()
-
-        if not event["allDay"]:
-            instance_end_date = datetime(rrule_instance.year, rrule_instance.month, rrule_instance.day,
-                                         end_date.hour, end_date.minute, end_date.second)
-            event["end"] = berlin.localize(instance_end_date).isoformat()
-        print(repr(event))
-        events.append(event)
-
-    return events
-
-
-def get_exdates(ical_event):
-    exdate_ical = ical_event.get('exdate')
-    if not exdate_ical:
-        exdates = []
-    elif isinstance(exdate_ical, list):
-        exdates = exdate_ical
-    else:
-        exdates = [exdate_ical]
-
-    return exdates
 
 def get_end_date(event, start_date):
     dtend = event.get('dtend')
@@ -179,68 +126,209 @@ def get_end_date(event, start_date):
     return end_date
 
 
-export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.js')
-export_json_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.json')
-merged_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'c-base-events.ics')
-error_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'errors.js')
-online_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'online.js')
+def build_json_events_from_rrule(event_container, event_template, start_date, end_date):
+    json_events = []
 
-try:
-    events_ics = urllib.request.urlopen('https://c.c-base.org/calendar/events.ics').read()
-    c_base_events = do_one_ics(events_ics, 'mainhall')
-    regulars_ics = urllib.request.urlopen('https://c.c-base.org/calendar/regulars.ics').read()
-    regular_events = do_one_ics(regulars_ics, 'mainhall')
-    online_ics = urllib.request.urlopen('https://c.c-base.org/calendar/online.ics').read()
-    online_events = do_one_ics(online_ics, 'https://jitsi.c-base.org/mainhall')
-    url = "https://c.c-base.org/calendar/seminars.ics"
-    seminars_ics = urllib.request.urlopen(url).read()
-    seminar_events = do_one_ics(seminars_ics, "seminarraum")
-    
-    # No errors happened. Make it known to the world!
-    with open(os.path.realpath(error_name), mode="w") as outfh:
-        outfh.write('window.c_base_errors = "";\n')
-except Exception as e:
-    traceback.print_exc(file=sys.stdout)
-    print('### ERROR : ', str(e))
-    with open(os.path.realpath(error_name), mode="w") as outfh:
-        outfh.write('window.c_base_errors = ' + json.dumps(str(e)) + ";\n")
-    exit(1)
+    event = event_container.main_event
+    ical_rrule = event.get('rrule')
+    ical_rrule_str = ical_rrule.to_ical().decode('utf-8')
+    rrule = rrulestr(ical_rrule_str, ignoretz=True, dtstart=start_date.replace(tzinfo=None))
+    ruleset = rruleset()
+    ruleset.rrule(rrule)
 
-with open(os.path.realpath(export_name), mode="w") as outfh:
-    outfh.write("window.c_base_regulars = " + json.dumps(regular_events, indent=4, sort_keys=True) + ";\n")
-    outfh.write("window.c_base_events = " + json.dumps(c_base_events, indent=4, sort_keys=True) + ";\n")
-    outfh.write("window.c_base_seminars= " + json.dumps(seminar_events, indent=4, sort_keys=True) + ";\n")
-    outfh.write("window.c_base_online = " + json.dumps(online_events, indent=4, sort_keys=True) + ";\n")
-    outfh.write("window.lastUpdate = \"" + datetime.now().isoformat() +" UTC\";\n")
+    exclusion_dates = get_exclusion_dates(event)
+    for exclusion_date in exclusion_dates:
+        for exclusion_date_date in exclusion_date.dts:
+            datetime_or_date = exclusion_date_date.dt
+            if isinstance(datetime_or_date, datetime):
+                exclusion_datetime = datetime_or_date.replace(tzinfo=None)
+            elif isinstance(datetime_or_date, date):
+                exclusion_datetime = datetime(
+                    year=datetime_or_date.year,
+                    month=datetime_or_date.month,
+                    day=datetime_or_date.day)
+            else:
+                continue
 
-all_events = {
-    "c_base_regulars": regular_events,
-    "c_base_events": c_base_events,
-    "c_base_seminars": seminar_events,
-    "c_base_online": online_events,
-    "lastUpdate": datetime.now().isoformat() +" UTC"
-}
+            ruleset.exdate(exclusion_datetime)
 
-with open(os.path.realpath(export_json_name), mode="w") as outfh:
-    outfh.write(json.dumps(all_events, indent=4, sort_keys=True) + "\n")
+    after = datetime.now() - timedelta(**INTO_PAST)
+    before = datetime.now() + timedelta(**INTO_FUTURE)
+    rrule_instances = list(ruleset.between(after, before))
+    for index, occurrence_datetime in enumerate(rrule_instances, start=1):
+        date_key = to_date_string(occurrence_datetime)
+        try:
+            override_event = event_container.overrides[date_key]
+            event = event_to_json(override_event, event_template['id'], event_template['location'])
+        except KeyError:
+            event = copy(event_template)
+            if event['allDay']:
+                event['start'] = occurrence_datetime.date().isoformat()
+            else:
+                event['start'] = occurrence_datetime.replace(tzinfo=end_date.tzinfo).isoformat()
+                event['end'] = datetime(
+                    year=occurrence_datetime.year,
+                    month=occurrence_datetime.month,
+                    day=occurrence_datetime.day,
+                    hour=end_date.hour,
+                    minute=end_date.minute,
+                    second=end_date.second,
+                    tzinfo=end_date.tzinfo,
+                ).isoformat()
 
-with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.ics'), 'wb') as f:
-    f.write(events_ics)
+        event['uid'] = '{}-{}'.format(event_template['uid'], index)
 
-with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'regulars.ics'), 'wb') as f:
-    f.write(regulars_ics)
+        json_events.append(event)
 
-with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'seminars.ics'), 'wb') as f:
-    f.write(seminars_ics)
+    return json_events
 
-with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'online.ics'), 'wb') as f:
-    f.write(online_ics)
 
-with open(os.path.realpath(merged_name) , 'wb') as f:
-    f.write(newcal.to_ical())
-    f.close()
+def get_exclusion_dates(ical_event):
+    exdate = ical_event.get('exdate')
+    if not exdate:
+        exclusion_dates = []
+    elif isinstance(exdate, list):
+        exclusion_dates = exdate
+    else:
+        exclusion_dates = [exdate]
 
-with open(os.path.realpath(error_name), mode="w") as outfh:
-    outfh.write('window.c_base_errors = "None";\n')
+    return exclusion_dates
 
-exit(0)
+
+def event_to_json(event, json_id, default_location):
+    date_start = event.get('dtstart').dt
+
+    is_all_day = False
+    if not isinstance(date_start, datetime):
+        is_all_day = True
+
+    json_data = {
+        'id': json_id,
+        'uid': str(event.get('uid')),
+        'title': clean_up_title(event.get('summary')),
+        'description': event.get('description', ''),
+        'location': event.get('location', default_location),
+        'allDay': is_all_day,
+        'start': date_start.isoformat(),
+    }
+
+    if not is_all_day:
+        json_data['end'] = get_end_date(event, date_start).isoformat()
+
+    return json_data
+
+
+def clean_up_title(title):
+    if title is None:
+        return 'Kein Titel'
+
+    return re.sub(r'\n', ' ', title)
+
+
+def to_date_string(datetime_or_date):
+    return datetime_or_date.strftime('%Y-%m-%d')
+
+
+def to_datetime(ical_event, field):
+    date_value = ical_event.get(field).dt
+    if isinstance(date_value, datetime):
+        return date_value
+    else:
+        return datetime(date_value.year, date_value.month, date_value.day).astimezone(berlin)
+
+
+def merge_calendars(calendars):
+    merged_calendar = Calendar()
+    merged_calendar.add('prodid', '-//' + 'c-base' + '//' + 'c-base.org' + '//')
+    merged_calendar.add('version', '2.0')
+    merged_calendar.add('x-wr-calname', 'c-base events')
+
+    for calendar in calendars:
+        for event in calendar.walk('vevent'):
+            merged_calendar.add_component(event)
+
+    return merged_calendar
+
+
+def download_and_parse_ics(url):
+    ics = urllib.request.urlopen(url).read()
+    return parse_ics(ics)
+
+
+def parse_ics(ics):
+    return Calendar.from_ical(ics)
+
+
+def main():
+    export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.js')
+    export_json_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.json')
+    merged_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'c-base-events.ics')
+    error_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'errors.js')
+
+    try:
+        events_calendar = download_and_parse_ics('https://c.c-base.org/calendar/events.ics')
+        c_base_events = calendar_to_json(events_calendar, default_location='mainhall')
+
+        regulars_calendar = download_and_parse_ics('https://c.c-base.org/calendar/regulars.ics')
+        regular_events = calendar_to_json(regulars_calendar, default_location='mainhall')
+
+        online_calendar = download_and_parse_ics('https://c.c-base.org/calendar/online.ics')
+        online_events = calendar_to_json(online_calendar, default_location='https://jitsi.c-base.org/mainhall')
+
+        seminars_calendar = download_and_parse_ics('https://c.c-base.org/calendar/seminars.ics')
+        seminar_events = calendar_to_json(seminars_calendar, default_location='seminarraum')
+
+        # No errors happened. Make it known to the world!
+        with open(os.path.realpath(error_name), mode='w') as outfh:
+            outfh.write('window.c_base_errors = "";\n')
+    except Exception as e:
+        traceback.print_exc(file=sys.stdout)
+        print('### ERROR : ', str(e))
+
+        with open(os.path.realpath(error_name), mode='w') as outfh:
+            outfh.write('window.c_base_errors = ' + json.dumps(str(e)) + ';\n')
+
+        exit(1)
+
+    with open(os.path.realpath(export_name), mode='w') as outfh:
+        outfh.write('window.c_base_regulars = ' + json.dumps(regular_events, indent=4, sort_keys=True) + ';\n')
+        outfh.write('window.c_base_events = ' + json.dumps(c_base_events, indent=4, sort_keys=True) + ';\n')
+        outfh.write('window.c_base_seminars= ' + json.dumps(seminar_events, indent=4, sort_keys=True) + ';\n')
+        outfh.write('window.c_base_online = ' + json.dumps(online_events, indent=4, sort_keys=True) + ';\n')
+        outfh.write('window.lastUpdate = "' + datetime.now().isoformat() + ' UTC";\n')
+
+    all_events = {
+        'c_base_regulars': regular_events,
+        'c_base_events': c_base_events,
+        'c_base_seminars': seminar_events,
+        'c_base_online': online_events,
+        'lastUpdate': datetime.now().isoformat() + ' UTC'
+    }
+
+    with open(os.path.realpath(export_json_name), mode='w') as outfh:
+        outfh.write(json.dumps(all_events, indent=4, sort_keys=True) + '\n')
+
+    with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.ics'), 'wb') as f:
+        f.write(events_calendar.to_ical())
+
+    with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'regulars.ics'), 'wb') as f:
+        f.write(regulars_calendar.to_ical())
+
+    with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'seminars.ics'), 'wb') as f:
+        f.write(seminars_calendar.to_ical())
+
+    with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'online.ics'), 'wb') as f:
+        f.write(online_calendar.to_ical())
+
+    merged_calendar = merge_calendars([events_calendar, regulars_calendar, online_calendar, seminars_calendar])
+    with open(os.path.realpath(merged_name), 'wb') as f:
+        f.write(merged_calendar.to_ical())
+        f.close()
+
+    with open(os.path.realpath(error_name), mode='w') as outfh:
+        outfh.write('window.c_base_errors = "None";\n')
+
+
+if __name__ == '__main__':
+    main()
+    exit(0)

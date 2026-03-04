@@ -4,7 +4,7 @@
 """convertcal.py: Converts several ICS files and exports a Javascript array suitable for fullcalendar.io."""
 
 __author__ = "Ricardo Band <xen@c-base.org>, Uwe Kamper <uk@c-base.org>, cketti <cketti@c-base.org>"
-__copyright__ = "Copyright 2016-2025, Berlin, Germany"
+__copyright__ = "Copyright 2016-2026, Berlin, Germany"
 
 import urllib.request
 from copy import copy
@@ -270,9 +270,6 @@ def main():
         regulars_calendar = download_and_parse_ics('https://c.c-base.org/calendar/regulars.ics')
         regular_events = calendar_to_json(regulars_calendar, default_location='mainhall')
 
-        online_calendar = download_and_parse_ics('https://c.c-base.org/calendar/online.ics')
-        online_events = calendar_to_json(online_calendar, default_location='https://jitsi.c-base.org/mainhall')
-
         seminars_calendar = download_and_parse_ics('https://c.c-base.org/calendar/seminars.ics')
         seminar_events = calendar_to_json(seminars_calendar, default_location='seminarraum')
 
@@ -292,14 +289,12 @@ def main():
         outfh.write('window.c_base_regulars = ' + json.dumps(regular_events, indent=4, sort_keys=True) + ';\n')
         outfh.write('window.c_base_events = ' + json.dumps(c_base_events, indent=4, sort_keys=True) + ';\n')
         outfh.write('window.c_base_seminars= ' + json.dumps(seminar_events, indent=4, sort_keys=True) + ';\n')
-        outfh.write('window.c_base_online = ' + json.dumps(online_events, indent=4, sort_keys=True) + ';\n')
         outfh.write('window.lastUpdate = "' + datetime.now().isoformat() + ' UTC";\n')
 
     all_events = {
         'c_base_regulars': regular_events,
         'c_base_events': c_base_events,
         'c_base_seminars': seminar_events,
-        'c_base_online': online_events,
         'lastUpdate': datetime.now().isoformat() + ' UTC'
     }
 
@@ -315,10 +310,7 @@ def main():
     with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'seminars.ics'), 'wb') as f:
         f.write(seminars_calendar.to_ical())
 
-    with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'online.ics'), 'wb') as f:
-        f.write(online_calendar.to_ical())
-
-    merged_calendar = merge_calendars([events_calendar, regulars_calendar, online_calendar, seminars_calendar])
+    merged_calendar = merge_calendars([events_calendar, regulars_calendar, seminars_calendar])
     with open(os.path.realpath(merged_name), 'wb') as f:
         f.write(merged_calendar.to_ical())
         f.close()

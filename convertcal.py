@@ -258,10 +258,10 @@ def parse_ics(ics):
 
 
 def main():
-    export_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.js')
-    export_json_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.json')
-    merged_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'c-base-events.ics')
-    error_name = os.path.join(os.path.dirname(__file__), 'html', 'exported', 'errors.js')
+    export_name = os.path.join(os.path.dirname(__file__), 'calendar_export', 'events.js')
+    export_json_name = os.path.join(os.path.dirname(__file__), 'calendar_export', 'events.json')
+    merged_name = os.path.join(os.path.dirname(__file__), 'calendar_export', 'c-base-events.ics')
+    error_name = os.path.join(os.path.dirname(__file__), 'calendar_export', 'errors.js')
 
     try:
         events_calendar = download_and_parse_ics('https://c.c-base.org/calendar/events.ics')
@@ -301,13 +301,13 @@ def main():
     with open(os.path.realpath(export_json_name), mode='w') as outfh:
         outfh.write(json.dumps(all_events, indent=4, sort_keys=True) + '\n')
 
-    with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'events.ics'), 'wb') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'calendar_export', 'events.ics'), 'wb') as f:
         f.write(events_calendar.to_ical())
 
-    with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'regulars.ics'), 'wb') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'calendar_export', 'regulars.ics'), 'wb') as f:
         f.write(regulars_calendar.to_ical())
 
-    with open(os.path.join(os.path.dirname(__file__), 'html', 'exported', 'seminars.ics'), 'wb') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'calendar_export', 'seminars.ics'), 'wb') as f:
         f.write(seminars_calendar.to_ical())
 
     merged_calendar = merge_calendars([events_calendar, regulars_calendar, seminars_calendar])
